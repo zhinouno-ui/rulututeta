@@ -10,75 +10,119 @@
 :root{
   --bg:#0b0f1e; --panel:#121634; --panel2:#0f1330; --border:#1e2150;
   --text:#e8ebff; --muted:#b7b9d6; --ok:#25D366; --pointer:#22d3ee;
-  --alert:#ffcc00; --danger:#ff6b6b;
 }
 *{box-sizing:border-box} html,body{height:100%}
 body{margin:0;color:var(--text);background:var(--bg);font:16px/1.35 system-ui,-apple-system,Segoe UI,Roboto}
-body::before{
-  content:"";position:fixed;inset:0;z-index:-2;
-  background: radial-gradient(900px 500px at 50% -10%, rgba(101,74,255,.25), transparent),
-              radial-gradient(700px 350px at 100% 0%, rgba(0,209,255,.18), transparent),
-              linear-gradient(180deg,#0b0f1e 0%,#0b0f1e 60%,#0a0d20 100%);
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:
+  radial-gradient(900px 500px at 50% -10%, rgba(101,74,255,.25), transparent),
+  radial-gradient(700px 350px at 100% 0%, rgba(0,209,255,.18), transparent),
+  linear-gradient(180deg,#0b0f1e 0%,#0b0f1e 60%,#0a0d20 100%);
+}
+.container{max-width:980px;margin:14px auto;padding:0 14px 92px}
+.card{background: radial-gradient(120% 100% at 50% 0%, rgba(124,77,255,.08), transparent), var(--panel2);
+  border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 15px 40px rgba(0,0,0,.35)}
+@media(max-width:520px){.container{padding:0 0 92px}.card{border-radius:0;border-left:0;border-right:0;padding:14px}}
+.head{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+
+/* === BET300 más grande con badge naranja (estilo botón plataforma) === */
+.brand{
+  display:inline-block;
+  height:36px;
+  padding:6px 10px;
+  border-radius:12px;
+  background:linear-gradient(90deg,#ffd166,#ff7ab6);
+  box-shadow:0 8px 20px rgba(0,0,0,.25);
+  filter:drop-shadow(0 2px 8px rgba(0,0,0,.4));
 }
 
-/* ===== Layout principal ===== */
-.container{max-width:980px;margin:14px auto;padding:0 14px 28px}
-.card{background: radial-gradient(120% 100% at 50% 0%, rgba(124,77,255,.08), rgba(0,0,0,0)) , var(--panel2);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 15px 40px rgba(0,0,0,.35)}
-@media (max-width:520px){.container{padding:0}.card{border-radius:0;border-left:0;border-right:0;padding:14px}}
-.head{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
-.brand{height:28px;width:auto;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))}
-.pill{background:linear-gradient(90deg,rgba(124,77,255,.15),rgba(0,209,255,.15));border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-size:12px; color:var(--muted)}
-.pill.time{display:flex;align-items:center;gap:8px}
-.count{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:rgba(255,204,0,.15);border:1px solid rgba(255,204,0,.35);color:#ffe27a;font-weight:700;font-variant-numeric:tabular-nums}
+/* si por algún motivo no carga el logo svg, que el texto se vea bien dentro del badge */
+.brand[alt="BET300"]{color:#0a1020;font-weight:900;line-height:1;}
+
+/* Pills existentes */
+.pill{background:linear-gradient(90deg,rgba(124,77,255,.15),rgba(0,209,255,.15));border:1px solid var(--border);
+  border-radius:999px;padding:6px 10px;font-size:12px;color:var(--muted)}
+.pill.time{display:flex;gap:8px;align-items:center}
+.pill.sound{cursor:pointer;user-select:none}
+.count{display:inline-flex;gap:6px;align-items:center;padding:4px 8px;border-radius:999px;background:rgba(255,204,0,.15);
+  border:1px solid rgba(255,204,0,.35);color:#ffe27a;font-weight:700;font-variant-numeric:tabular-nums}
 
 .grid{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
 @media(min-width:900px){.grid{grid-template-columns:1.15fr .85fr}}
 
 .stage{position:relative;display:flex;align-items:center;justify-content:center}
-.wrap{width:100%;max-width:520px;margin:auto}
+.wrap{width:100%;max-width:520px;margin:auto;position:relative}
 canvas{width:100%;height:auto;display:block}
+.pointer{position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  border-left:16px solid transparent;border-right:16px solid transparent;border-bottom:26px solid var(--pointer);z-index:2;
+  filter:drop-shadow(0 4px 10px rgba(34,211,238,.35))}
+@media(max-width:420px){.pointer{border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:22px solid var(--pointer);top:4px}}
 
-/* Indicador (triángulo) */
-.pointer{position:absolute; top:6px; left:50%; transform:translateX(-50%); width:0; height:0; border-left: 16px solid transparent; border-right:16px solid transparent; border-bottom:26px solid var(--pointer); filter: drop-shadow(0 4px 10px rgba(34,211,238,.35)); z-index:2}
-@media (max-width:420px){.pointer{ border-left:12px solid transparent; border-right:12px solid transparent; border-bottom:22px solid var(--pointer); top:4px; }}
-
-/* Paneles y texto */
 .panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px}
 .center{text-align:center}
 h1,h2,h3,p{margin:0 0 8px} h1{font-size:24px} .muted{color:var(--muted)}
-.stat{display:flex;align-items:center;gap:12px;justify-content:center;margin:8px 0 14px}
-.badge{min-width:72px;height:46px;border-radius:12px;background:radial-gradient(100% 100% at 50% 0%, rgba(0,209,255,.35), rgba(124,77,255,.35));display:grid;place-items:center;font-weight:800;font-size:18px;box-shadow:inset 0 0 10px rgba(124,77,255,.35)}
-.row{display:flex;gap:10px}
-.btn{appearance:none;border:none;cursor:pointer;padding:12px 16px;border-radius:12px;font-weight:700;background:linear-gradient(90deg,#6c59ff,#00d1ff);color:#0a1020;width:100%;box-shadow:0 8px 20px rgba(0,0,0,.35)}
-.btn:disabled{opacity:.55;cursor:not-allowed}
-.btn.ok{background:var(--ok);color:#0b0f1e}
+.stat{display:flex;gap:12px;align-items:center;justify-content:center;margin:8px 0 14px}
+.badge{min-width:72px;height:46px;border-radius:12px;background:radial-gradient(100% 100% at 50% 0%, rgba(0,209,255,.35), rgba(124,77,255,.35));
+  display:grid;place-items:center;font-weight:800;font-size:18px;box-shadow:inset 0 0 10px rgba(124,77,255,.35)}
 
-/* ===== Bloque plataforma ===== */
-.promo{display:grid;grid-template-columns: 1fr minmax(200px, 260px);align-items:center;gap:12px;margin-top:10px;padding:12px;border:1px dashed var(--border);border-radius:12px;background:linear-gradient(180deg,rgba(255,204,0,.07),rgba(0,0,0,0))}
-.promo.expired{border-color:rgba(255,107,107,.5);background:linear-gradient(180deg,rgba(255,107,107,.07),rgba(0,0,0,0))}
+/* Bloque plataforma (igual) */
+.promo{display:grid;grid-template-columns:1fr minmax(200px,260px);align-items:center;gap:12px;margin-top:10px;padding:12px;border:1px dashed var(--border);border-radius:12px}
+.promo.expired{border-color:rgba(255,107,107,.5)}
 .promo .copy{display:grid;gap:4px}
-.promo .eyebrow{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid rgba(255,204,0,.35);background:rgba(255,204,0,.12);color:#ffe27a;font-weight:700;font-size:12px;width:max-content}
-.btn.play{display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:14px 16px; border-radius:12px; font-weight:800; background:linear-gradient(90deg,#ffd166,#ff7ab6); color:#0a1020; text-align:center; box-shadow:0 8px 20px rgba(0,0,0,.25)}
-.btn.play .icon{font-size:18px; line-height:1}
-.btn.play .label{line-height:1.1}
-@media (max-width:520px){.promo{grid-template-columns:1fr; gap:10px}.btn.play{width:100%}}
+.promo .eyebrow{padding:2px 8px;border-radius:999px;border:1px solid rgba(255,204,0,.35);background:rgba(255,204,0,.12);color:#ffe27a;font-weight:700;font-size:12px;width:max-content}
+.btn.play{display:inline-flex;gap:10px;align-items:center;justify-content:center;padding:14px 16px;border-radius:12px;font-weight:800;
+  background:linear-gradient(90deg,#ffd166,#ff7ab6);color:#0a1020;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+@media(max-width:520px){.promo{grid-template-columns:1fr}.btn.play{width:100%}}
+
+/* Dock inferior (igual) */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:10;background:linear-gradient(180deg, rgba(11,15,30,0) 0%, rgba(11,15,30,.85) 22%, rgba(11,15,30,.95) 100%);
+  padding:10px 16px 14px;display:flex;gap:12px;align-items:center}
+.btn{appearance:none;border:none;cursor:pointer;padding:14px 16px;border-radius:14px;font-weight:800;background:linear-gradient(90deg,#6c59ff,#00d1ff);color:#0a1020;width:100%;
+  box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn.ok{background:#25D366;color:#0b0f1e}
+
+/* Naranja para “Girar” (sin tocar los demás) */
+#spinBtn{
+  background: linear-gradient(90deg,#FF9A3D,#FF5C39);
+  color:#0b0f1e;
+}
+#spinBtn:disabled{
+  background: linear-gradient(90deg,#FFBC82,#FF8C78);
+}
+
+/* === Confetti (papelitos) === */
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:40}
+.confetti i{
+  position:absolute;top:-20px;width:10px;height:14px;border-radius:2px;opacity:0;
+  animation:confFall 1.6s linear forwards;
+}
+@keyframes confFall{
+  8%{opacity:1}
+  100%{transform:translateY(110vh) rotate(360deg);opacity:0}
+}
 </style>
 </head>
 <body>
 
+<!-- contenedor de confetti -->
+<div id="confetti" class="confetti" aria-hidden="true"></div>
+
 <div class="container">
   <div class="card">
     <div class="head">
-      <img class="brand" src="img/logo-bet300.svg" alt="BET300" onerror="this.outerHTML='<strong>BET300</strong>'">
-      <span class="pill">Ruleta promocional · se acredita con la próxima carga</span>
+      <img class="brand" src="img/logo-bet300.svg" alt="BET300" onerror="this.outerHTML='<strong class=&quot;brand&quot;>BET300</strong>'">
+      <span class="pill">Promo interactiva</span>
       <span class="pill time">⚡ Tiempo limitado <span class="count" id="countdown">--:--</span></span>
+      <span class="pill sound" id="soundToggle">🔊 Sonido: <b id="soundState">ON</b></span>
     </div>
 
     <div class="grid">
       <div class="panel">
         <div class="stage">
-          <div class="wrap"><canvas id="wheel" width="620" height="620"></canvas></div>
-          <div class="pointer" aria-hidden="true"></div>
+          <div class="wrap">
+            <canvas id="wheel" width="620" height="620"></canvas>
+            <div class="pointer" aria-hidden="true"></div>
+          </div>
         </div>
       </div>
 
@@ -92,12 +136,6 @@ h1,h2,h3,p{margin:0 0 8px} h1{font-size:24px} .muted{color:var(--muted)}
             </div>
           </div>
         </div>
-
-        <div class="row" style="margin-top:8px">
-          <button id="spinBtn" class="btn">🎯 Girar ruleta</button>
-        </div>
-
-        <button id="claimBtn" class="btn ok" style="margin-top:10px" disabled>📲 Reclamar por WhatsApp</button>
 
         <div class="promo" id="promoBox">
           <div class="copy">
@@ -115,29 +153,20 @@ h1,h2,h3,p{margin:0 0 8px} h1{font-size:24px} .muted{color:var(--muted)}
   </div>
 </div>
 
+<!-- Dock fijo -->
+<div class="dock">
+  <button id="spinBtn" class="btn">🎯 Girar</button>
+  <button id="claimBtn" class="btn ok" disabled>📲 Reclamar</button>
+</div>
+
 <script>
-/* ===== Config de premios ===== */
-// montos: 2k–10k; porcentajes: 10–50
+/* ===== Config de premios (tu base) ===== */
 const MONEY_VALUES   = [2000,3000,4000,5000];
 const PERCENT_VALUES = [10,20,30,40,50];
-
-// intercalar $ y %, empezando por $
-const PRIZES = (() => {
-  const res = [];
-  const max = Math.max(MONEY_VALUES.length, PERCENT_VALUES.length);
-  for (let i=0;i<max;i++){
-    if (i < MONEY_VALUES.length)   res.push({type:'money', value:MONEY_VALUES[i]});
-    if (i < PERCENT_VALUES.length) res.push({type:'percent', value:PERCENT_VALUES[i]});
-  }
-  // esto produce 14 segmentos ($/% alternados, y al final sobran $$)
-  return res;
-})();
-
-// paleta (cicla si faltan)
-const COLORS = [
-  "#44e0ff","#7a5bff","#16e2b6","#ff6ad5","#ffd166","#4be1a0","#8ab6ff",
-  "#ff9bd1","#6ee7ff","#a78bfa","#34d39a","#ffa3e0","#ffe08a","#7ce1b9"
-];
+const PRIZES = (()=>{const r=[];const m=Math.max(MONEY_VALUES.length,PERCENT_VALUES.length);
+  for(let i=0;i<m;i++){ if(i<MONEY_VALUES.length)r.push({type:'money',value:MONEY_VALUES[i]});
+    if(i<PERCENT_VALUES.length)r.push({type:'percent',value:PERCENT_VALUES[i]}); } return r; })();
+const COLORS=["#44e0ff","#7a5bff","#16e2b6","#ff6ad5","#ffd166","#4be1a0","#8ab6ff","#ff9bd1","#6ee7ff","#a78bfa","#34d39a","#ffa3e0","#ffe08a","#7ce1b9"];
 
 /* WhatsApp y plataforma por PC */
 const WP_NUMBERS = { principal:"54911xxxxxxx", pc1:"5491156463327", pc01:"5491166587968", pc02:"5491157748076" };
@@ -151,205 +180,202 @@ if(pc==='1'){ WP=WP_NUMBERS.pc1; PLATFORM=PLATFORM_LINKS.pc1; }
 if(pc==='01'){ WP=WP_NUMBERS.pc01; PLATFORM=PLATFORM_LINKS.pc01; }
 if(pc==='02'){ WP=WP_NUMBERS.pc02; PLATFORM=PLATFORM_LINKS.pc02; }
 
-/* Elementos */
+
+/* ===== Audio fiable con WebAudio (sin archivos externos) ===== */
+let soundOn=true;
+const soundToggle=document.getElementById('soundToggle');
+const soundState=document.getElementById('soundState');
+const AudioKit=(()=>{
+  const Ctx=window.AudioContext||window.webkitAudioContext;
+  const ctx=new Ctx();
+  let unlocked=false;
+  function unlock(){ if(!unlocked){ ctx.resume().catch(()=>{}); unlocked=true; } }
+  function click(freq=900,dur=0.04,vol=0.05){
+    const o=ctx.createOscillator(); const g=ctx.createGain();
+    o.type='square'; o.frequency.value=freq;
+    g.gain.value=0; o.connect(g).connect(ctx.destination);
+    const t=ctx.currentTime;
+    g.gain.linearRampToValueAtTime(vol, t+0.005);
+    g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+    o.start(t); o.stop(t+dur);
+  }
+  function spinStart(){
+    const id=setInterval(()=>click(860+Math.random()*120,0.035,0.045),110);
+    return ()=>clearInterval(id);
+  }
+  function win(){
+    const notes=[880,1175,1568];
+    notes.forEach((f,i)=>setTimeout(()=>click(f,0.12,0.09), i*130));
+  }
+  return {ctx,unlock,spinStart,win};
+})();
+soundToggle.addEventListener('click',()=>{ soundOn=!soundOn; soundState.textContent=soundOn?'ON':'OFF'; });
+
+/* ===== Canvas/ruleta (tu base) ===== */
 const wheel=document.getElementById('wheel'), ctx=wheel.getContext('2d');
 const spinBtn=document.getElementById('spinBtn'), claimBtn=document.getElementById('claimBtn');
 const badge=document.getElementById('badge'), title=document.getElementById('title'), subtitle=document.getElementById('subtitle');
 const countdownEl=document.getElementById('countdown'), promoBox=document.getElementById('promoBox');
-document.getElementById('playNow').href = PLATFORM;
+const confetti = document.getElementById('confetti');
 
-/* Estado */
 let angle=0, spinning=false, cx,cy,r, cssW=0;
 
-/* ===== Utils ===== */
-const money = n => "$"+n.toLocaleString("es-AR");
-function label(p){ return p.type==='money' ? money(p.value) : (p.value+"%"); }
-function subtitleHTML(p){
-  return p.type==='money'
-    ? `Recibís <b>${money(p.value)} extra</b> con tu próxima carga.`
-    : `Recibís un <b>${p.value}% extra</b> con tu próxima carga.`;
-}
-function whatsappText(p){
-  return p.type==='money'
-    ? `Hola, gané ${money(p.value)} en la ruleta y quiero reclamarlo con mi próxima carga.`
-    : `Hola, gané un ${p.value}% de bono en la ruleta y quiero reclamarlo con mi próxima carga.`;
-}
+const money=n=>"$"+n.toLocaleString("es-AR");
+const label=p=>p.type==='money'?money(p.value):(`${p.value}%`);
+const subtitleHTML=p=>p.type==='money'
+  ? `Recibís <b>${money(p.value)} extra</b> con tu próxima carga.`
+  : `Recibís un <b>${p.value}% extra</b> con tu próxima carga.`;
+const whatsappText=p=>p.type==='money'
+  ? `Hola, gané ${money(p.value)} en la ruleta y quiero reclamarlo con mi próxima carga.`
+  : `Hola, gané un ${p.value}% de bono en la ruleta y quiero reclamarlo con mi próxima carga.`;
 
-/* ===== Canvas responsive ===== */
-function getWrapWidth(){ return Math.floor(document.querySelector('.wrap').getBoundingClientRect().width); }
+function getWrapWidth(){return Math.floor(document.querySelector('.wrap').getBoundingClientRect().width)}
 function setSize(){
-  const dpr = window.devicePixelRatio || 1;
-  const w = Math.min(520, Math.max(280, getWrapWidth()));
-  cssW = w;
-  wheel.width  = Math.floor(w * dpr);
-  wheel.height = Math.floor(w * dpr);
-  wheel.style.width  = w + 'px';
-  wheel.style.height = w + 'px';
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-  cx = wheel.width/dpr/2; cy = wheel.height/dpr/2; r = Math.min(cx,cy) - 10;
-  draw(angle);
+  const dpr=window.devicePixelRatio||1;
+  const w=Math.min(520,Math.max(280,getWrapWidth()));
+  cssW=w; wheel.width=Math.floor(w*dpr); wheel.height=Math.floor(w*dpr);
+  wheel.style.width=w+'px'; wheel.style.height=w+'px'; ctx.setTransform(dpr,0,0,dpr,0,0);
+  cx=wheel.width/dpr/2; cy=wheel.height/dpr/2; r=Math.min(cx,cy)-10;
 }
-addEventListener('resize', ()=>{ clearTimeout(window.__wTo); window.__wTo=setTimeout(setSize,120) });
+addEventListener('resize',()=>{clearTimeout(window.__wTo);window.__wTo=setTimeout(()=>{setSize()},120)})
 
-/* ===== Dibujo ===== */
 function draw(a){
   ctx.clearRect(0,0,wheel.width,wheel.height);
-  const n = PRIZES.length, arc = Math.PI*2/n;
-
-  const font =
-    cssW <= 340 ? "700 20px system-ui,-apple-system,Segoe UI" :
-    cssW <= 380 ? "700 24px system-ui,-apple-system,Segoe UI" :
-    cssW <= 440 ? "700 28px system-ui,-apple-system,Segoe UI" :
-                  "700 32px system-ui,-apple-system,Segoe UI";
-
+  const n=PRIZES.length, arc=Math.PI*2/n;
+  const font= cssW<=340?"700 20px system-ui,-apple-system,Segoe UI":
+               cssW<=380?"700 24px system-ui,-apple-system,Segoe UI":
+               cssW<=440?"700 28px system-ui,-apple-system,Segoe UI":"700 32px system-ui,-apple-system,Segoe UI";
   for(let i=0;i<n;i++){
     const s=a+i*arc, e=s+arc;
-    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,s,e); ctx.closePath();
-    ctx.fillStyle = COLORS[i%COLORS.length]; ctx.fill();
-    ctx.strokeStyle="rgba(10,15,35,.35)"; ctx.lineWidth=2; ctx.stroke();
-
-    const txt = label(PRIZES[i]);
-    ctx.save(); ctx.translate(cx,cy); ctx.rotate(s+arc/2);
-    ctx.textAlign="right"; ctx.fillStyle="#091024"; ctx.font=font;
-    ctx.fillText(txt, r-18, 10); ctx.restore();
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,e);ctx.closePath();
+    ctx.fillStyle=COLORS[i%COLORS.length];ctx.fill();
+    ctx.strokeStyle="rgba(10,15,35,.35)";ctx.lineWidth=2;ctx.stroke();
+    const txt=label(PRIZES[i]);
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(s+arc/2);
+    ctx.textAlign="right";ctx.fillStyle="#091024";ctx.font=font;
+    ctx.fillText(txt,r-18,10);ctx.restore();
   }
-
+  // aro + luces
+  ctx.beginPath();ctx.lineWidth=Math.max(8,r*0.04);ctx.strokeStyle="#424864";ctx.arc(cx,cy,r*1.02,0,Math.PI*2);ctx.stroke();
+  const bulbs=54, rr=r*1.02, t=Date.now()/130;
+  for(let i=0;i<bulbs;i++){
+    const ang=i/bulbs*Math.PI*2; const x=cx+Math.cos(ang)*rr; const y=cy+Math.sin(ang)*rr;
+    const on=(Math.floor(t)%bulbs)===i;
+    ctx.beginPath();ctx.fillStyle=on?"rgba(220,235,255,1)":"rgba(220,235,255,.55)";
+    ctx.arc(x,y,Math.max(3,r*0.03),0,Math.PI*2);ctx.fill();
+  }
   // centro
-  const rCenter = cssW <= 360 ? Math.max(26, r * 0.085) : cssW <= 420 ? Math.max(30, r * 0.095) : Math.max(34, r * 0.105);
-  ctx.beginPath(); ctx.arc(cx,cy,rCenter,0,Math.PI*2);
-  ctx.fillStyle="#0e1230"; ctx.fill();
-  ctx.strokeStyle="rgba(124,77,255,.6)"; ctx.lineWidth=Math.max(2, rCenter*0.08); ctx.stroke();
+  const rCenter=cssW<=360?Math.max(26,r*.085):cssW<=420?Math.max(30,r*.095):Math.max(34,r*.105);
+  ctx.beginPath();ctx.arc(cx,cy,rCenter,0,Math.PI*2);ctx.fillStyle="#0e1230";ctx.fill();
+  ctx.strokeStyle="rgba(124,77,255,.6)";ctx.lineWidth=Math.max(2,rCenter*.08);ctx.stroke();
 }
+// animación “idle” (luces)
+(function glow(){ draw(angle); requestAnimationFrame(glow); })();
 
-/* ===== Ganador por posición (puntero arriba) ===== */
-function normAngle(rad){ const T=Math.PI*2; return ((rad%T)+T)%T; }
+function normAngle(rad){const T=Math.PI*2;return((rad%T)+T)%T}
 function winnerIndexByAngle(a){
-  const n=PRIZES.length, arc=Math.PI*2/n, pointer=Math.PI*1.5;
-  let best=0, dist=1e9;
+  const n=PRIZES.length,arc=Math.PI*2/n,pointer=Math.PI*1.5;
+  let best=0,dist=1e9;
   for(let i=0;i<n;i++){
     const center=normAngle(a+i*arc+arc/2);
-    let d=Math.abs(normAngle(center-pointer));
-    if(d>Math.PI) d=(Math.PI*2)-d;
-    if(d<dist){ dist=d; best=i; }
+    let d=Math.abs(normAngle(center-pointer)); if(d>Math.PI)d=(Math.PI*2)-d;
+    if(d<dist){dist=d;best=i}
   }
   return best;
 }
-
-/* ===== Animación ===== */
 function animateTo(target,ms,cb){
-  const start=performance.now(), from=angle;
+  const start=performance.now(),from=angle;
   (function loop(t){
-    const k=Math.min(1,(t-start)/ms), ease=1-Math.pow(1-k,3);
-    angle=from+(target-from)*ease; draw(angle);
-    if(k<1) requestAnimationFrame(loop); else cb&&cb();
+    const k=Math.min(1,(t-start)/ms),ease=1-Math.pow(1-k,3);
+    angle=from+(target-from)*ease;
+    if(k<1){requestAnimationFrame(loop)}else{cb&&cb()}
   })(start);
 }
 
-/* ===== Persistencia / reset diario ===== */
-function todayKey(){ const n=new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`; }
+/* ===== Persistencia/contador (tu base) ===== */
+function todayKey(){const n=new Date();return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`}
 function restoreDaily(){
-  const today = todayKey();
-  const storedDay = localStorage.getItem('spin_date');
-  if(storedDay && storedDay !== today){
-    localStorage.removeItem('spin_done');
-    localStorage.removeItem('spin_prize');
-    localStorage.setItem('spin_date', today);
-  } else if(!storedDay){
-    localStorage.setItem('spin_date', today);
-  }
+  const today=todayKey(); const stored=localStorage.getItem('spin_date');
+  if(stored && stored!==today){localStorage.removeItem('spin_done');localStorage.removeItem('spin_prize');localStorage.setItem('spin_date',today)}
+  else if(!stored){localStorage.setItem('spin_date',today)}
 }
 function restorePrizeIfAny(){
-  const done = localStorage.getItem('spin_done')==='1';
-  const saved = localStorage.getItem('spin_prize');
+  const done=localStorage.getItem('spin_done')==='1'; const saved=localStorage.getItem('spin_prize');
   if(done && saved){
-    const p = JSON.parse(saved);
-    badge.textContent = label(p);
-    title.textContent = "🎉 ¡Premio obtenido!";
-    subtitle.innerHTML = subtitleHTML(p);
-    claimBtn.disabled = false;
-    spinBtn.disabled = true;
-    const msg = whatsappText(p);
-    claimBtn.onclick = ()=> location.href = `https://wa.me/${WP}?text=${encodeURIComponent(msg)}`;
+    const p=JSON.parse(saved);
+    badge.textContent=label(p); title.textContent="🎉 ¡Premio obtenido!"; subtitle.innerHTML=subtitleHTML(p);
+    claimBtn.disabled=false; spinBtn.disabled=true;
+    const msg=whatsappText(p); claimBtn.onclick=()=>location.href=`https://wa.me/${WP}?text=${encodeURIComponent(msg)}`;
   }
 }
 function scheduleMidnightReset(){
-  const now=new Date();
-  const midnight=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,5,0);
-  setTimeout(()=>{
-    localStorage.removeItem('spin_done');
-    localStorage.removeItem('spin_prize');
-    localStorage.setItem('spin_date', todayKey());
-    spinBtn.disabled=false;
-    badge.textContent='-';
-    title.textContent='Tenés 1 giro disponible';
-    subtitle.innerHTML='Los premios se acreditan con tu <b>próxima carga mínima</b>.';
-  }, midnight.getTime()-now.getTime());
+  const now=new Date(); const midnight=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,5,0);
+  setTimeout(()=>{localStorage.removeItem('spin_done');localStorage.removeItem('spin_prize');localStorage.setItem('spin_date',todayKey());
+    spinBtn.disabled=false;badge.textContent='-';title.textContent='Tenés 1 giro disponible';
+    subtitle.innerHTML='Los premios se acreditan con tu <b>próxima carga mínima</b>.';}, midnight.getTime()-now.getTime());
 }
-
-/* ===== Contador a 23:59 ===== */
-function endOfDay(){
-  const n=new Date();
-  const end=new Date(n.getFullYear(), n.getMonth(), n.getDate(), 23, 59, 0, 0).getTime();
-  return end > Date.now() ? end : new Date(n.getFullYear(), n.getMonth(), n.getDate()+1, 23, 59, 0, 0).getTime();
-}
+function endOfDay(){const n=new Date();const end=new Date(n.getFullYear(),n.getMonth(),n.getDate(),23,59,0,0).getTime();
+  return end>Date.now()?end:new Date(n.getFullYear(),n.getMonth(),n.getDate()+1,23,59,0,0).getTime()}
 function tickCountdown(){
-  const ms = endOfDay() - Date.now();
-  const total = Math.max(0, Math.floor(ms/1000));
-  const h = Math.floor(total/3600), m = Math.floor((total%3600)/60), s = total%60;
-  countdownEl.textContent = h>0 ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
-                                : `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  if(ms<=0){
-    promoBox.classList.add('expired');
-    spinBtn.disabled = true;
-    title.textContent = "⏱️ Oferta finalizada";
-    subtitle.innerHTML = "Los giros promocionales se habilitan en la próxima ventana.";
-    return true;
-  }
+  const ms=endOfDay()-Date.now(); const total=Math.max(0,Math.floor(ms/1000));
+  const h=Math.floor(total/3600), m=Math.floor((total%3600)/60), s=total%60;
+  countdownEl.textContent=h>0?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  if(ms<=0){promoBox.classList.add('expired');spinBtn.disabled=true;title.textContent="⏱️ Oferta finalizada";
+    subtitle.innerHTML="Los giros promocionales se habilitan en la próxima ventana.";return true}
   return false;
 }
 
-/* ===== Spin ===== */
+/* ===== Confetti ===== */
+function confettiBurst(){
+  confetti.innerHTML='';
+  const n = 28;
+  for(let i=0;i<n;i++){
+    const p=document.createElement('i');
+    p.style.left = (Math.random()*100)+'vw';
+    p.style.animationDelay = (Math.random()*0.5)+'s';
+    // dos gamas de color para variar
+    p.style.background = Math.random()<.5
+      ? 'linear-gradient(#80ffea,#4e9cff)'
+      : 'linear-gradient(#ffd166,#ff3d7f)';
+    confetti.appendChild(p);
+  }
+  setTimeout(()=>{confetti.innerHTML='';}, 1800);
+}
+
+/* ===== Spin (con audio WebAudio) ===== */
+let stopTicks=null;
+document.addEventListener('click',()=>AudioKit.unlock(),{once:true}); // “desbloqueo” general
+
 spinBtn.addEventListener('click', ()=>{
   if(spinning) return;
   if(localStorage.getItem('spin_done')==='1'){ alert("Ya usaste tu giro de hoy"); return; }
 
   spinning=true; spinBtn.disabled=true;
+  AudioKit.unlock();
+  if(soundOn){ stopTicks = AudioKit.spinStart(); }
+
   const extra=5+Math.random()*1.5, offset=Math.random()*Math.PI*2, final=angle+(Math.PI*2*extra)+offset;
 
   animateTo(final, 3000, ()=>{
     angle=final;
-    const idx = winnerIndexByAngle(angle);
-    const prize = PRIZES[idx];
-
-    badge.textContent = label(prize);
-    title.textContent = "🎉 ¡Premio obtenido!";
-    subtitle.innerHTML = subtitleHTML(prize);
-    claimBtn.disabled = false;
-
-    const msg = whatsappText(prize);
-    claimBtn.onclick = ()=> location.href = `https://wa.me/${WP}?text=${encodeURIComponent(msg)}`;
-
-    localStorage.setItem('spin_done','1');
-    localStorage.setItem('spin_prize', JSON.stringify(prize));
-    localStorage.setItem('spin_date', todayKey());
+    const idx=winnerIndexByAngle(angle); const prize=PRIZES[idx];
+    badge.textContent=label(prize); title.textContent="🎉 ¡Premio obtenido!"; subtitle.innerHTML=subtitleHTML(prize);
+    claimBtn.disabled=false;
+    const msg=whatsappText(prize); claimBtn.onclick=()=>location.href=`https://wa.me/${WP}?text=${encodeURIComponent(msg)}`;
+    localStorage.setItem('spin_done','1'); localStorage.setItem('spin_prize',JSON.stringify(prize)); localStorage.setItem('spin_date',todayKey());
+    if(soundOn){ if(stopTicks) stopTicks(); AudioKit.win(); }
+    confettiBurst(); // <<--- papelitos al ganar
     spinning=false;
   });
 });
 
 /* ===== Init ===== */
 function init(){
-  setSize();
-  restoreDaily();
-  restorePrizeIfAny();
-  tickCountdown();
-  const iv = setInterval(()=>{ if(tickCountdown()) clearInterval(iv); }, 1000);
+  setSize(); restoreDaily(); restorePrizeIfAny(); tickCountdown();
+  const iv=setInterval(()=>{ if(tickCountdown()) clearInterval(iv); },1000);
   scheduleMidnightReset();
 }
 init();
 </script>
 </body>
 </html>
-
-
- 
-
