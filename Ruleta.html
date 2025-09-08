@@ -118,7 +118,7 @@ h1,h2,h3,p{margin:0 0 8px} h1{font-size:24px} .muted{color:var(--muted)}
 <script>
 /* ===== Config de premios ===== */
 // montos: 2k–10k; porcentajes: 10–50
-const MONEY_VALUES   = [2000,3000,4000,5000,6000,7000,8000,9000,10000];
+const MONEY_VALUES   = [2000,3000,4000,5000];
 const PERCENT_VALUES = [10,20,30,40,50];
 
 // intercalar $ y %, empezando por $
@@ -148,8 +148,8 @@ const pc = params.get('pc');
 let WP = WP_NUMBERS.principal;
 let PLATFORM = PLATFORM_LINKS.principal;
 if(pc==='1'){ WP=WP_NUMBERS.pc1; PLATFORM=PLATFORM_LINKS.pc1; }
-if(pc==='2'){ WP=WP_NUMBERS.pc2; PLATFORM=PLATFORM_LINKS.pc2; }
-if(pc==='3'){ WP=WP_NUMBERS.pc3; PLATFORM=PLATFORM_LINKS.pc3; }
+if(pc==='01'){ WP=WP_NUMBERS.pc01; PLATFORM=PLATFORM_LINKS.pc01; }
+if(pc==='02'){ WP=WP_NUMBERS.pc02; PLATFORM=PLATFORM_LINKS.pc02; }
 
 /* Elementos */
 const wheel=document.getElementById('wheel'), ctx=wheel.getContext('2d');
@@ -349,3 +349,4 @@ init();
 </script>
 </body>
 </html>
+
