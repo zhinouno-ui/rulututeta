@@ -160,24 +160,29 @@ h1,h2,h3,p{margin:0 0 8px} h1{font-size:24px} .muted{color:var(--muted)}
 </div>
 
 <script>
-/* ===== Config de premios (tu base) ===== */
-const MONEY_VALUES   = [2000,3000,4000,5000];
-const PERCENT_VALUES = [10,20,30,40,50];
-const PRIZES = (()=>{const r=[];const m=Math.max(MONEY_VALUES.length,PERCENT_VALUES.length);
-  for(let i=0;i<m;i++){ if(i<MONEY_VALUES.length)r.push({type:'money',value:MONEY_VALUES[i]});
-    if(i<PERCENT_VALUES.length)r.push({type:'percent',value:PERCENT_VALUES[i]}); } return r; })();
-const COLORS=["#44e0ff","#7a5bff","#16e2b6","#ff6ad5","#ffd166","#4be1a0","#8ab6ff","#ff9bd1","#6ee7ff","#a78bfa","#34d39a","#ffa3e0","#ffe08a","#7ce1b9"];
-
 /* WhatsApp/plataforma por pc (igual) */
-const WP_NUMBERS={principal:"54911xxxxxx",epc1:"5491156463327",fpc1:"5491166587968",fpc2:"5491157748076"};
-const PLATFORM_LINKS={principal:"https://plataforma.example/inicio",epc1:"https://e01.bet300vip.com/",fpc1:"https://f01.bet300vip.com/",fpc2:"https://f02.bet300vip.com/"};
-const params=new URLSearchParams(location.search);const pc=params.get('pc');
-let WP=WP_NUMBERS.principal, PLATFORM=PLATFORM_LINKS.principal;
-if(epc==='1'){WP=WP_NUMBERS.epc1;PLATFORM=PLATFORM_LINKS.epc1}
-if(fpc==='1'){WP=WP_NUMBERS.fpc1;PLATFORM=PLATFORM_LINKS.fpc1}
-if(fpc==='2'){WP=WP_NUMBERS.fpc2;PLATFORM=PLATFORM_LINKS.fpc2}
-document.getElementById('playNow').href=PLATFORM;
+const WP_NUMBERS={
+  principal:"54911xxxxxx",
+  epc1:"5491156463327",
+  fpc1:"5491166587968",
+  fpc2:"5491157748076"
+};
+const PLATFORM_LINKS={
+  principal:"https://plataforma.example/inicio",
+  epc1:"https://e01.bet300vip.com/",
+  fpc1:"https://f01.bet300vip.com/",
+  fpc2:"https://f02.bet300vip.com/"
+};
 
+const params=new URLSearchParams(location.search);
+const pc=params.get('pc'); // <<-- acá se toma el parámetro pc=epc1 / fpc1 / fpc2
+
+let WP=WP_NUMBERS.principal, PLATFORM=PLATFORM_LINKS.principal;
+if(pc==="epc1"){ WP=WP_NUMBERS.epc1; PLATFORM=PLATFORM_LINKS.epc1; }
+if(pc==="fpc1"){ WP=WP_NUMBERS.fpc1; PLATFORM=PLATFORM_LINKS.fpc1; }
+if(pc==="fpc2"){ WP=WP_NUMBERS.fpc2; PLATFORM=PLATFORM_LINKS.fpc2; }
+
+document.getElementById('playNow').href=PLATFORM;
 /* ===== Audio fiable con WebAudio (sin archivos externos) ===== */
 let soundOn=true;
 const soundToggle=document.getElementById('soundToggle');
@@ -376,3 +381,4 @@ init();
 </script>
 </body>
 </html>
+
