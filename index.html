@@ -23,22 +23,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;background:
   border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 15px 40px rgba(0,0,0,.35)}
 @media(max-width:520px){.container{padding:0 0 92px}.card{border-radius:0;border-left:0;border-right:0;padding:14px}}
 .head{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
-
-/* === BET300 más grande con badge naranja (estilo botón plataforma) === */
-.brand{
-  display:inline-block;
-  height:36px;
-  padding:6px 10px;
-  border-radius:12px;
-  background:linear-gradient(90deg,#ffd166,#ff7ab6);
-  box-shadow:0 8px 20px rgba(0,0,0,.25);
-  filter:drop-shadow(0 2px 8px rgba(0,0,0,.4));
-}
-
-/* si por algún motivo no carga el logo svg, que el texto se vea bien dentro del badge */
-.brand[alt="BET300"]{color:#0a1020;font-weight:900;line-height:1;}
-
-/* Pills existentes */
+.brand{height:28px;width:auto;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))}
 .pill{background:linear-gradient(90deg,rgba(124,77,255,.15),rgba(0,209,255,.15));border:1px solid var(--border);
   border-radius:999px;padding:6px 10px;font-size:12px;color:var(--muted)}
 .pill.time{display:flex;gap:8px;align-items:center}
@@ -63,34 +48,30 @@ h1,h2,h3,p{margin:0 0 8px} h1{font-size:24px} .muted{color:var(--muted)}
 .stat{display:flex;gap:12px;align-items:center;justify-content:center;margin:8px 0 14px}
 .badge{min-width:72px;height:46px;border-radius:12px;background:radial-gradient(100% 100% at 50% 0%, rgba(0,209,255,.35), rgba(124,77,255,.35));
   display:grid;place-items:center;font-weight:800;font-size:18px;box-shadow:inset 0 0 10px rgba(124,77,255,.35)}
+.smallline{font-size:12px;color:var(--muted);margin-top:4px}
 
-/* Bloque plataforma (igual) */
+/* Bloque plataforma */
 .promo{display:grid;grid-template-columns:1fr minmax(200px,260px);align-items:center;gap:12px;margin-top:10px;padding:12px;border:1px dashed var(--border);border-radius:12px}
 .promo.expired{border-color:rgba(255,107,107,.5)}
 .promo .copy{display:grid;gap:4px}
 .promo .eyebrow{padding:2px 8px;border-radius:999px;border:1px solid rgba(255,204,0,.35);background:rgba(255,204,0,.12);color:#ffe27a;font-weight:700;font-size:12px;width:max-content}
 .btn.play{display:inline-flex;gap:10px;align-items:center;justify-content:center;padding:14px 16px;border-radius:12px;font-weight:800;
-  background:linear-gradient(90deg,#ffd166,#ff7ab6);color:#0a1020;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+  background:linear-gradient(90deg,#ffd166,#ff7ab6);color:#0a0f20;box-shadow:0 8px 20px rgba(0,0,0,.25)}
 @media(max-width:520px){.promo{grid-template-columns:1fr}.btn.play{width:100%}}
 
-/* Dock inferior (igual) */
+/* Dock inferior */
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:10;background:linear-gradient(180deg, rgba(11,15,30,0) 0%, rgba(11,15,30,.85) 22%, rgba(11,15,30,.95) 100%);
   padding:10px 16px 14px;display:flex;gap:12px;align-items:center}
-.btn{appearance:none;border:none;cursor:pointer;padding:14px 16px;border-radius:14px;font-weight:800;background:linear-gradient(90deg,#6c59ff,#00d1ff);color:#0a1020;width:100%;
+.btn{appearance:none;border:none;cursor:pointer;padding:14px 16px;border-radius:14px;font-weight:800;background:linear-gradient(90deg,#6c59ff,#00d1ff);color:#0a0f20;width:100%;
   box-shadow:0 8px 20px rgba(0,0,0,.35)}
 .btn:disabled{opacity:.55;cursor:not-allowed}
 .btn.ok{background:#25D366;color:#0b0f1e}
 
-/* Naranja para “Girar” (sin tocar los demás) */
-#spinBtn{
-  background: linear-gradient(90deg,#FF9A3D,#FF5C39);
-  color:#0b0f1e;
-}
-#spinBtn:disabled{
-  background: linear-gradient(90deg,#FFBC82,#FF8C78);
-}
+/* Naranja para “Girar” */
+#spinBtn{ background: linear-gradient(90deg,#FF9A3D,#FF5C39); color:#0b0f1e; }
+#spinBtn:disabled{ background: linear-gradient(90deg,#FFBC82,#FF8C78); }
 
-/* === Confetti (papelitos) === */
+/* Confetti (papelitos) */
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:40}
 .confetti i{
   position:absolute;top:-20px;width:10px;height:14px;border-radius:2px;opacity:0;
@@ -104,13 +85,13 @@ h1,h2,h3,p{margin:0 0 8px} h1{font-size:24px} .muted{color:var(--muted)}
 </head>
 <body>
 
-<!-- contenedor de confetti -->
+<!-- papelitos -->
 <div id="confetti" class="confetti" aria-hidden="true"></div>
 
 <div class="container">
   <div class="card">
     <div class="head">
-      <img class="brand" src="img/logo-bet300.svg" alt="BET300" onerror="this.outerHTML='<strong class=&quot;brand&quot;>BET300</strong>'">
+      <img class="brand" src="img/logo-bet300.svg" alt="BET300" onerror="this.outerHTML='<strong>BET300</strong>'">
       <span class="pill">Promo interactiva</span>
       <span class="pill time">⚡ Tiempo limitado <span class="count" id="countdown">--:--</span></span>
       <span class="pill sound" id="soundToggle">🔊 Sonido: <b id="soundState">ON</b></span>
@@ -129,7 +110,10 @@ h1,h2,h3,p{margin:0 0 8px} h1{font-size:24px} .muted{color:var(--muted)}
       <div class="panel">
         <div class="center">
           <div class="stat">
-            <div class="badge" id="badge">-</div>
+            <div>
+              <div class="badge" id="badge">-</div>
+              <div class="smallline" id="stampLine" aria-live="polite"></div>
+            </div>
             <div>
               <h1 id="title">Tenés 1 giro disponible</h1>
               <p class="muted" id="subtitle">Los premios se acreditan con tu <b>próxima carga mínima</b>.</p>
@@ -160,63 +144,75 @@ h1,h2,h3,p{margin:0 0 8px} h1{font-size:24px} .muted{color:var(--muted)}
 </div>
 
 <script>
-/* ===== Config de premios (tu base) ===== */
-const MONEY_VALUES   = [2000,3000,4000,5000];
-const PERCENT_VALUES = [10,20,30,40,50];
+/* ===== Premios: $ intercalado con % ===== */
+const MONEY_VALUES   = [2000,3000,4000,5000,3000,2000,5000,4000,1000];
+const PERCENT_VALUES = [10,20,30];
 const PRIZES = (()=>{const r=[];const m=Math.max(MONEY_VALUES.length,PERCENT_VALUES.length);
   for(let i=0;i<m;i++){ if(i<MONEY_VALUES.length)r.push({type:'money',value:MONEY_VALUES[i]});
     if(i<PERCENT_VALUES.length)r.push({type:'percent',value:PERCENT_VALUES[i]}); } return r; })();
 const COLORS=["#44e0ff","#7a5bff","#16e2b6","#ff6ad5","#ffd166","#4be1a0","#8ab6ff","#ff9bd1","#6ee7ff","#a78bfa","#34d39a","#ffa3e0","#ffe08a","#7ce1b9"];
 
-/* WhatsApp y plataforma por PC */
-const WP_NUMBERS = { principal:"54911xxxxxxx", pc1:"5491156463327", pc01:"5491166587968", pc02:"5491157748076" };
-const PLATFORM_LINKS = { principal:"https://plataforma.example/inicio", pc1:"https://e01.bet300vip.com/", pc01:"https://f01.bet300vip.com/", pc02:"https://f02.bet300vip.com/" };
+/* WhatsApp / plataforma por pc */
+const WP_NUMBERS={principal:"5491157737173",pc1:"5491157748613",pc2:"5491157748076"};
+const PLATFORM_LINKS={principal:"https://plataforma.example/inicio",pc1:"https://fge.bet300vip.com/",pc2:"https://fge.bet300vip.com/"};
+const params=new URLSearchParams(location.search);const pc=params.get('pc');
+let WP=WP_NUMBERS.principal, PLATFORM=PLATFORM_LINKS.principal;
+if(pc==='1'){WP=WP_NUMBERS.pc1;PLATFORM=PLATFORM_LINKS.pc1}
+if(pc==='2'){WP=WP_NUMBERS.pc2;PLATFORM=PLATFORM_LINKS.pc2}
+document.getElementById('playNow').href=PLATFORM;
 
-const params = new URLSearchParams(location.search);
-const pc = params.get('pc');
-let WP = WP_NUMBERS.principal;
-let PLATFORM = PLATFORM_LINKS.principal;
-if(pc==='1'){ WP=WP_NUMBERS.pc1; PLATFORM=PLATFORM_LINKS.pc1; }
-if(pc==='01'){ WP=WP_NUMBERS.pc01; PLATFORM=PLATFORM_LINKS.pc01; }
-if(pc==='02'){ WP=WP_NUMBERS.pc02; PLATFORM=PLATFORM_LINKS.pc02; }
+/* ===== Antifraude: device id + código + timestamp visibles ===== */
+const SALT = "bet300-ruleta-v1"; // podés rotarlo periódicamente
+function ensureDeviceId(){
+  let id = localStorage.getItem('device_id');
+  if(!id){ id = (crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2,8)}`); localStorage.setItem('device_id', id); }
+  return id;
+}
+const DEVICE_ID = ensureDeviceId();
+function todayKey(){const n=new Date();return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`}
+function tsString(d=new Date()){
+  const dd=String(d.getDate()).padStart(2,'0'),mm=String(d.getMonth()+1).padStart(2,'0'),yyyy=d.getFullYear();
+  const hh=String(d.getHours()).padStart(2,'0'),mi=String(d.getMinutes()).padStart(2,'0');
+  return `${dd}/${mm}/${yyyy} ${hh}:${mi}`;
+}
+async function sha256hex(msg){
+  const enc = new TextEncoder().encode(msg);
+  const buf = await crypto.subtle.digest("SHA-256", enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+async function makeClaimCode(prizeLabel){
+  const base = `${DEVICE_ID}|${todayKey()}|${prizeLabel}|pc:${pc||'0'}|${SALT}`;
+  const hex = await sha256hex(base);
+  return hex.slice(0,10).toUpperCase();
+}
 
-
-/* ===== Audio fiable con WebAudio (sin archivos externos) ===== */
+/* ===== Audio (ticks + win) ===== */
 let soundOn=true;
 const soundToggle=document.getElementById('soundToggle');
 const soundState=document.getElementById('soundState');
 const AudioKit=(()=>{
   const Ctx=window.AudioContext||window.webkitAudioContext;
-  const ctx=new Ctx();
-  let unlocked=false;
+  const ctx=new Ctx(); let unlocked=false;
   function unlock(){ if(!unlocked){ ctx.resume().catch(()=>{}); unlocked=true; } }
   function click(freq=900,dur=0.04,vol=0.05){
     const o=ctx.createOscillator(); const g=ctx.createGain();
-    o.type='square'; o.frequency.value=freq;
-    g.gain.value=0; o.connect(g).connect(ctx.destination);
-    const t=ctx.currentTime;
-    g.gain.linearRampToValueAtTime(vol, t+0.005);
-    g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+    o.type='square'; o.frequency.value=freq; g.gain.value=0; o.connect(g).connect(ctx.destination);
+    const t=ctx.currentTime; g.gain.linearRampToValueAtTime(vol, t+0.005); g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
     o.start(t); o.stop(t+dur);
   }
-  function spinStart(){
-    const id=setInterval(()=>click(860+Math.random()*120,0.035,0.045),110);
-    return ()=>clearInterval(id);
-  }
-  function win(){
-    const notes=[880,1175,1568];
-    notes.forEach((f,i)=>setTimeout(()=>click(f,0.12,0.09), i*130));
-  }
+  function spinStart(){ const id=setInterval(()=>click(860+Math.random()*120,0.035,0.045),110); return ()=>clearInterval(id); }
+  function win(){ [880,1175,1568].forEach((f,i)=>setTimeout(()=>click(f,0.12,0.09), i*130)); }
   return {ctx,unlock,spinStart,win};
 })();
 soundToggle.addEventListener('click',()=>{ soundOn=!soundOn; soundState.textContent=soundOn?'ON':'OFF'; });
 
-/* ===== Canvas/ruleta (tu base) ===== */
+/* ===== Canvas / ruleta ===== */
 const wheel=document.getElementById('wheel'), ctx=wheel.getContext('2d');
 const spinBtn=document.getElementById('spinBtn'), claimBtn=document.getElementById('claimBtn');
 const badge=document.getElementById('badge'), title=document.getElementById('title'), subtitle=document.getElementById('subtitle');
 const countdownEl=document.getElementById('countdown'), promoBox=document.getElementById('promoBox');
 const confetti = document.getElementById('confetti');
+const stampEl = document.getElementById('stampLine');
 
 let angle=0, spinning=false, cx,cy,r, cssW=0;
 
@@ -225,9 +221,13 @@ const label=p=>p.type==='money'?money(p.value):(`${p.value}%`);
 const subtitleHTML=p=>p.type==='money'
   ? `Recibís <b>${money(p.value)} extra</b> con tu próxima carga.`
   : `Recibís un <b>${p.value}% extra</b> con tu próxima carga.`;
-const whatsappText=p=>p.type==='money'
-  ? `Hola, gané ${money(p.value)} en la ruleta y quiero reclamarlo con mi próxima carga.`
-  : `Hola, gané un ${p.value}% de bono en la ruleta y quiero reclamarlo con mi próxima carga.`;
+
+/* WhatsApp con código + fecha/hora */
+function whatsappText(prizeLabel){
+  const code = localStorage.getItem('spin_code') || '(SIN-COD)';
+  const ts   = localStorage.getItem('spin_ts')   || tsString();
+  return `Hola, gané ${prizeLabel} en la ruleta y quiero reclamarlo con mi próxima carga. Código: ${code} · ${ts}`;
+}
 
 function getWrapWidth(){return Math.floor(document.querySelector('.wrap').getBoundingClientRect().width)}
 function setSize(){
@@ -269,19 +269,18 @@ function draw(a){
   ctx.beginPath();ctx.arc(cx,cy,rCenter,0,Math.PI*2);ctx.fillStyle="#0e1230";ctx.fill();
   ctx.strokeStyle="rgba(124,77,255,.6)";ctx.lineWidth=Math.max(2,rCenter*.08);ctx.stroke();
 }
-// animación “idle” (luces)
+// idle
 (function glow(){ draw(angle); requestAnimationFrame(glow); })();
 
-function normAngle(rad){const T=Math.PI*2;return((rad%T)+T)%T}
+/* Ganador exacto por sector */
+function normAngle(rad){ const T = Math.PI * 2; return ((rad % T) + T) % T; }
 function winnerIndexByAngle(a){
-  const n=PRIZES.length,arc=Math.PI*2/n,pointer=Math.PI*1.5;
-  let best=0,dist=1e9;
-  for(let i=0;i<n;i++){
-    const center=normAngle(a+i*arc+arc/2);
-    let d=Math.abs(normAngle(center-pointer)); if(d>Math.PI)d=(Math.PI*2)-d;
-    if(d<dist){dist=d;best=i}
-  }
-  return best;
+  const n = PRIZES.length;
+  const arc = (Math.PI * 2) / n;
+  const pointer = Math.PI * 1.5; // 12 en punto
+  const rel = normAngle(pointer - a);
+  const idx = Math.floor(rel / arc) % n;
+  return idx;
 }
 function animateTo(target,ms,cb){
   const start=performance.now(),from=angle;
@@ -292,27 +291,37 @@ function animateTo(target,ms,cb){
   })(start);
 }
 
-/* ===== Persistencia/contador (tu base) ===== */
-function todayKey(){const n=new Date();return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`}
+/* ===== Persistencia / reset / countdown ===== */
 function restoreDaily(){
   const today=todayKey(); const stored=localStorage.getItem('spin_date');
-  if(stored && stored!==today){localStorage.removeItem('spin_done');localStorage.removeItem('spin_prize');localStorage.setItem('spin_date',today)}
-  else if(!stored){localStorage.setItem('spin_date',today)}
+  if(stored && stored!==today){
+    localStorage.removeItem('spin_done');
+    localStorage.removeItem('spin_prize');
+    localStorage.removeItem('spin_code');
+    localStorage.removeItem('spin_ts');
+    localStorage.setItem('spin_date',today);
+  } else if(!stored){ localStorage.setItem('spin_date',today) }
 }
 function restorePrizeIfAny(){
   const done=localStorage.getItem('spin_done')==='1'; const saved=localStorage.getItem('spin_prize');
   if(done && saved){
     const p=JSON.parse(saved);
-    badge.textContent=label(p); title.textContent="🎉 ¡Premio obtenido!"; subtitle.innerHTML=subtitleHTML(p);
+    const code = localStorage.getItem('spin_code') || '—';
+    const ts   = localStorage.getItem('spin_ts')   || tsString();
+    badge.textContent=label(p);
+    title.textContent="🎉 ¡Premio obtenido!";
+    subtitle.innerHTML=subtitleHTML(p);
+    stampEl.textContent = `Código: ${code} · ${ts}`;
     claimBtn.disabled=false; spinBtn.disabled=true;
-    const msg=whatsappText(p); claimBtn.onclick=()=>location.href=`https://wa.me/${WP}?text=${encodeURIComponent(msg)}`;
+    const msg=whatsappText(label(p));
+    claimBtn.onclick=()=>location.href=`https://wa.me/${WP}?text=${encodeURIComponent(msg)}`;
   }
 }
 function scheduleMidnightReset(){
   const now=new Date(); const midnight=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,5,0);
-  setTimeout(()=>{localStorage.removeItem('spin_done');localStorage.removeItem('spin_prize');localStorage.setItem('spin_date',todayKey());
+  setTimeout(()=>{localStorage.removeItem('spin_done');localStorage.removeItem('spin_prize');localStorage.removeItem('spin_code');localStorage.removeItem('spin_ts');localStorage.setItem('spin_date',todayKey());
     spinBtn.disabled=false;badge.textContent='-';title.textContent='Tenés 1 giro disponible';
-    subtitle.innerHTML='Los premios se acreditan con tu <b>próxima carga mínima</b>.';}, midnight.getTime()-now.getTime());
+    subtitle.innerHTML='Los premios se acreditan con tu <b>próxima carga mínima</b>.';stampEl.textContent='';}, midnight.getTime()-now.getTime());
 }
 function endOfDay(){const n=new Date();const end=new Date(n.getFullYear(),n.getMonth(),n.getDate(),23,59,0,0).getTime();
   return end>Date.now()?end:new Date(n.getFullYear(),n.getMonth(),n.getDate()+1,23,59,0,0).getTime()}
@@ -321,11 +330,10 @@ function tickCountdown(){
   const h=Math.floor(total/3600), m=Math.floor((total%3600)/60), s=total%60;
   countdownEl.textContent=h>0?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   if(ms<=0){promoBox.classList.add('expired');spinBtn.disabled=true;title.textContent="⏱️ Oferta finalizada";
-    subtitle.innerHTML="Los giros promocionales se habilitan en la próxima ventana.";return true}
-  return false;
+    subtitle.innerHTML="Los giros promocionales se habilitan en la próxima ventana.";}
 }
 
-/* ===== Confetti ===== */
+/* Confetti */
 function confettiBurst(){
   confetti.innerHTML='';
   const n = 28;
@@ -333,7 +341,6 @@ function confettiBurst(){
     const p=document.createElement('i');
     p.style.left = (Math.random()*100)+'vw';
     p.style.animationDelay = (Math.random()*0.5)+'s';
-    // dos gamas de color para variar
     p.style.background = Math.random()<.5
       ? 'linear-gradient(#80ffea,#4e9cff)'
       : 'linear-gradient(#ffd166,#ff3d7f)';
@@ -342,11 +349,11 @@ function confettiBurst(){
   setTimeout(()=>{confetti.innerHTML='';}, 1800);
 }
 
-/* ===== Spin (con audio WebAudio) ===== */
+/* ===== Spin ===== */
 let stopTicks=null;
-document.addEventListener('click',()=>AudioKit.unlock(),{once:true}); // “desbloqueo” general
+document.addEventListener('click',()=>AudioKit.unlock(),{once:true}); // desbloqueo audio
 
-spinBtn.addEventListener('click', ()=>{
+spinBtn.addEventListener('click', async ()=>{
   if(spinning) return;
   if(localStorage.getItem('spin_done')==='1'){ alert("Ya usaste tu giro de hoy"); return; }
 
@@ -356,15 +363,35 @@ spinBtn.addEventListener('click', ()=>{
 
   const extra=5+Math.random()*1.5, offset=Math.random()*Math.PI*2, final=angle+(Math.PI*2*extra)+offset;
 
-  animateTo(final, 3000, ()=>{
+  animateTo(final, 3000, async ()=>{
     angle=final;
     const idx=winnerIndexByAngle(angle); const prize=PRIZES[idx];
-    badge.textContent=label(prize); title.textContent="🎉 ¡Premio obtenido!"; subtitle.innerHTML=subtitleHTML(prize);
+    const prizeLabel = label(prize);
+
+    // generar y persistir código + timestamp
+    const code = await makeClaimCode(prizeLabel);
+    const ts   = tsString(new Date());
+    localStorage.setItem('spin_code', code);
+    localStorage.setItem('spin_ts', ts);
+
+    // pintar UI
+    badge.textContent=prizeLabel;
+    title.textContent="🎉 ¡Premio obtenido!";
+    subtitle.innerHTML=subtitleHTML(prize);
+    stampEl.textContent = `Código: ${code} · ${ts}`;
+
+    // WhatsApp
+    const msg = whatsappText(prizeLabel);
     claimBtn.disabled=false;
-    const msg=whatsappText(prize); claimBtn.onclick=()=>location.href=`https://wa.me/${WP}?text=${encodeURIComponent(msg)}`;
-    localStorage.setItem('spin_done','1'); localStorage.setItem('spin_prize',JSON.stringify(prize)); localStorage.setItem('spin_date',todayKey());
+    claimBtn.onclick=()=>location.href=`https://wa.me/${WP}?text=${encodeURIComponent(msg)}`;
+
+    // persistencia de giro
+    localStorage.setItem('spin_done','1');
+    localStorage.setItem('spin_prize',JSON.stringify(prize));
+    localStorage.setItem('spin_date',todayKey());
+
     if(soundOn){ if(stopTicks) stopTicks(); AudioKit.win(); }
-    confettiBurst(); // <<--- papelitos al ganar
+    confettiBurst();
     spinning=false;
   });
 });
@@ -372,7 +399,7 @@ spinBtn.addEventListener('click', ()=>{
 /* ===== Init ===== */
 function init(){
   setSize(); restoreDaily(); restorePrizeIfAny(); tickCountdown();
-  const iv=setInterval(()=>{ if(tickCountdown()) clearInterval(iv); },1000);
+  setInterval(tickCountdown,1000);
   scheduleMidnightReset();
 }
 init();
