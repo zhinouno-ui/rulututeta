@@ -153,15 +153,15 @@ const PRIZES = (()=>{const r=[];const m=Math.max(MONEY_VALUES.length,PERCENT_VAL
 const COLORS=["#44e0ff","#7a5bff","#16e2b6","#ff6ad5","#ffd166","#4be1a0","#8ab6ff","#ff9bd1","#6ee7ff","#a78bfa","#34d39a","#ffa3e0","#ffe08a","#7ce1b9"];
 
 /* WhatsApp / plataforma por pc */
-const WP_NUMBERS={principal:"5491157737173",pc1:"5491157748613",pc2:"5491157748076",alv:"5491150030414"};
-const PLATFORM_LINKS={principal:"https://plataforma.example/inicio",pc1:"https://e01.bet300vip.com/",pc2:"https://f01.bet300vip.com/",alv:"https://alvge.bet300vip.com"};
+const WP_NUMBERS={principal:"5491157737173",pc1:"5491157748613",pc2:"5491157748076",pc01:"5491171323400"};
+const PLATFORM_LINKS={principal:"https://plataforma.example/inicio",pc1:"https://e01.bet300vip.com/",pc2:"https://f02.bet300vip.com/",pc01:"https://f01.bet300vip.com/"};
 const params = new URLSearchParams(location.search);
 const pc = params.get('pc');
 const alv = params.get('alv');
 let WP=WP_NUMBERS.principal, PLATFORM=PLATFORM_LINKS.principal;
 if(pc==='1'){WP=WP_NUMBERS.pc1;PLATFORM=PLATFORM_LINKS.pc1}
 if(pc==='2'){WP=WP_NUMBERS.pc2;PLATFORM=PLATFORM_LINKS.pc2}
-if(alv){WP=WP_NUMBERS.alv;PLATFORM=PLATFORM_LINKS.alv}
+if(pc==='01'){WP=WP_NUMBERS.pc01;PLATFORM=PLATFORM_LINKS.pc01}
 document.getElementById('playNow').href=PLATFORM;
 
 /* ===== Antifraude: device id + código + timestamp visibles ===== */
@@ -409,5 +409,6 @@ init();
 </script>
 </body>
 </html>
+
 
 
