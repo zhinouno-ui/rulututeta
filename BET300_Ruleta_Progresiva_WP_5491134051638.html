@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BET300 · Ruleta Progresiva</title>
+<meta name="theme-color" content="#070a18">
+
+<style>
+:root{
+  --bg:#070a18;
+  --panel:#0e1330;
+  --panel2:#0b1026;
+  --border:#1b2352;
+  --text:#eef1ff;
+  --muted:#b7bddb;
+
+  --gold:#ffd166;         /* Girar */
+  --gold2:#f59e0b;
+
+  --neon:#22d3ee;         /* Reclamar */
+  --neon2:#06b6d4;
+
+  --ok:#22c55e;           /* VERDE FLÚOR selección */
+  --ok2:#16a34a;
+
+  --danger:#fb7185;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  color:var(--text);
+  background:var(--bg);
+  font:16px/1.35 system-ui,-apple-system,Segoe UI,Roboto;
+}
+body::before{
+  content:"";
+  position:fixed; inset:0; z-index:-2;
+  background:
+    radial-gradient(900px 520px at 50% -10%, rgba(124,77,255,.26), transparent),
+    radial-gradient(720px 380px at 100% 0%, rgba(34,211,238,.18), transparent),
+    radial-gradient(620px 360px at 0% 100%, rgba(255,209,102,.10), transparent),
+    linear-gradient(180deg,#070a18 0%,#070a18 62%,#050716 100%);
+}
+
+.container{max-width:980px;margin:10px auto 96px;padding:0 14px}
+.card{
+  background: radial-gradient(120% 100% at 50% 0%, rgba(124,77,255,.10), transparent), var(--panel2);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:14px;
+  box-shadow:0 16px 44px rgba(0,0,0,.40);
+}
+@media(max-width:520px){
+  .container{padding:0 0 96px}
+  .card{border-radius:0;border-left:0;border-right:0;padding:12px}
+}
+
+/* Header ultra compacto */
+.topline{
+  position:relative;
+  display:flex; align-items:center; gap:10px;
+  padding:8px 10px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:linear-gradient(180deg, rgba(124,77,255,.10), rgba(34,211,238,.06));
+}
+.brand{display:flex; align-items:center; gap:10px; min-width:0;}
+.brand img{
+  height:44px; width:auto; display:block;
+  filter:drop-shadow(0 3px 10px rgba(0,0,0,.55));
+}
+@media(max-width:420px){ .brand img{height:40px} }
+
+h1,h2,h3,p{margin:0 0 8px}
+h1{font-size:20px}
+.muted{color:var(--muted)}
+
+/* ===== Menú lateral (oculta "ventana activa" y sonido) ===== */
+.menuBtn{
+  position:absolute;
+  right:10px; top:50%;
+  transform:translateY(-50%);
+  appearance:none;border:none;cursor:pointer;
+  width:42px;height:36px;border-radius:12px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+  display:grid;place-items:center;
+  box-shadow:0 10px 24px rgba(0,0,0,.25);
+}
+.menuBtn:hover{filter:brightness(1.06)}
+.menuPanel{
+  position:fixed; top:0; right:-320px; height:100%;
+  width:min(320px,86vw);
+  background:linear-gradient(180deg, rgba(11,16,38,.96), rgba(2,6,23,.96));
+  border-left:1px solid var(--border);
+  box-shadow:-22px 0 55px rgba(0,0,0,.55);
+  z-index:80;
+  padding:14px;
+  transition:right .18s ease;
+  backdrop-filter: blur(8px);
+}
+.menuPanel.show{right:0}
+.menuTop{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.menuTop b{font-size:14px}
+.menuClose{
+  margin-left:auto; cursor:pointer; opacity:.85;
+  padding:6px 10px;border-radius:10px;border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+}
+.menuClose:hover{opacity:1}
+.menuItems{display:grid;gap:10px;margin-top:10px}
+.pill{
+  display:flex; gap:10px; align-items:center; justify-content:space-between;
+  padding:10px 12px; border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:var(--muted);
+  font-size:13px;
+}
+.count{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 10px; border-radius:999px;
+  background:rgba(255,209,102,.14);
+  border:1px solid rgba(255,209,102,.35);
+  color:#ffe9a3;
+  font-weight:900;
+  font-variant-numeric:tabular-nums;
+}
+.pill.sound{cursor:pointer; user-select:none}
+.pill.sound:hover{filter:brightness(1.08)}
+
+/* Layout principal */
+.grid{display:grid; gap:14px; grid-template-columns:minmax(0,1fr)}
+@media(min-width:900px){ .grid{grid-template-columns:1.15fr .85fr} }
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:14px;
+}
+
+/* Ruleta: subimos un poco */
+.stage{position:relative; display:flex; align-items:center; justify-content:center; margin-top:2px}
+.wrap{width:100%; max-width:520px; margin:auto; position:relative}
+canvas{width:100%; height:auto; display:block}
+.pointer{
+  position:absolute; top:6px; left:50%; transform:translateX(-50%);
+  border-left:16px solid transparent;
+  border-right:16px solid transparent;
+  border-bottom:26px solid #22d3ee;
+  z-index:2;
+  filter:drop-shadow(0 4px 10px rgba(34,211,238,.35));
+}
+@media(max-width:420px){
+  .pointer{border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:22px solid #22d3ee;top:4px}
+}
+
+/* Selector */
+.selector{display:grid; gap:10px;}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.field{
+  display:flex; gap:10px; align-items:center;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.03);
+}
+.field input{
+  width:100%;
+  border:none; outline:none;
+  background:transparent;
+  color:var(--text);
+  font-size:16px;
+}
+.field .hint{font-size:12px;color:var(--muted)}
+
+/* Segmentos (panel derecha) */
+.segBtns{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px}
+@media(max-width:520px){ .segBtns{grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px} }
+.seg{
+  appearance:none; border:none; cursor:pointer;
+  padding:12px 12px;
+  border-radius:16px;
+  border:1px solid var(--border);
+  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  color:var(--text);
+  box-shadow:0 10px 26px rgba(0,0,0,.25);
+  text-align:left;
+  transition:transform .08s ease, filter .08s ease, border-color .12s ease, box-shadow .12s ease;
+}
+.seg:hover{transform:translateY(-1px); filter:brightness(1.05)}
+.seg b{display:block; font-size:14px}
+.seg small{display:block; color:var(--muted); margin-top:2px; font-size:12px; line-height:1.25}
+.seg.active{
+  border-color:rgba(34,197,94,.70);
+  box-shadow:
+    0 14px 28px rgba(0,0,0,.32),
+    0 0 0 2px rgba(34,197,94,.18),
+    0 0 24px rgba(34,197,94,.22);
+  background:linear-gradient(180deg, rgba(34,197,94,.16), rgba(124,77,255,.08));
+}
+
+/* ==== BARRA RÁPIDA ARRIBA (sticky) ==== */
+.quickBar{
+  position:sticky;
+  top:8px;
+  z-index:25;
+  margin-top:10px;
+}
+.quickInner{
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  box-shadow:0 12px 30px rgba(0,0,0,.35);
+  padding:10px;
+  backdrop-filter: blur(6px);
+}
+.quickTop{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  margin-bottom:8px;
+}
+.quickTop .ttl{font-weight:900}
+.quickTop .sub{color:var(--muted); font-size:12px}
+@media(max-width:420px){
+  .quickTop{flex-direction:column; align-items:flex-start; gap:4px}
+}
+.quickSegBtns{
+  display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px;
+}
+@media(max-width:520px){ .quickSegBtns{gap:8px} }
+.qseg{
+  appearance:none;border:none;cursor:pointer;
+  padding:10px 10px;border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.03);
+  color:var(--text);
+  font-weight:900;
+  text-align:center;
+  transition:transform .08s ease, filter .08s ease, border-color .12s ease, box-shadow .12s ease;
+}
+.qseg:hover{transform:translateY(-1px);filter:brightness(1.05)}
+.qseg small{display:block;font-weight:700;color:var(--muted);font-size:11px;margin-top:2px}
+.qseg.active{
+  border-color:rgba(34,197,94,.70);
+  background:linear-gradient(180deg, rgba(34,197,94,.16), rgba(124,77,255,.08));
+  box-shadow:0 0 0 2px rgba(34,197,94,.16), 0 0 22px rgba(34,197,94,.18);
+}
+
+/* Montito arriba (debajo de segmentos) */
+.quickAmount{
+  margin-top:10px;
+  border:1px solid rgba(34,197,94,.18);
+  border-radius:16px;
+  padding:10px;
+  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+}
+.quickAmount .field{
+  margin:0;
+  border-color:rgba(255,255,255,.10);
+}
+.quickHelp{margin:8px 2px 0;font-size:12px;color:var(--muted)}
+
+/* Estado */
+.stat{
+  display:flex; gap:12px; align-items:center; justify-content:center;
+  margin:10px 0 14px;
+}
+.badge{
+  min-width:74px; height:46px; border-radius:12px;
+  background:radial-gradient(100% 100% at 50% 0%, rgba(34,211,238,.35), rgba(124,77,255,.35));
+  display:grid; place-items:center;
+  font-weight:900; font-size:18px;
+  box-shadow:inset 0 0 12px rgba(124,77,255,.35);
+}
+.smallline{font-size:12px;color:var(--muted);margin-top:4px;text-align:center}
+
+.noteBox{
+  margin-top:10px;
+  border:1px dashed rgba(255,255,255,.12);
+  border-radius:14px;
+  padding:10px 12px;
+  background:rgba(255,255,255,.02);
+  display:grid; gap:6px;
+}
+.noteBox .k{font-size:12px;color:var(--muted)}
+.noteBox .v{font-weight:800}
+
+/* Dock inferior */
+.dock{
+  position:fixed; left:0; right:0; bottom:0; z-index:40;
+  background:linear-gradient(180deg, rgba(7,10,24,0) 0%, rgba(7,10,24,.84) 22%, rgba(7,10,24,.95) 100%);
+  padding:10px 14px 14px;
+  display:flex; gap:10px; align-items:center;
+}
+.btn{
+  appearance:none; border:none; cursor:pointer;
+  padding:14px 16px; border-radius:14px;
+  font-weight:900;
+  width:100%;
+  box-shadow:0 10px 24px rgba(0,0,0,.35);
+  transition:transform .06s ease, filter .08s ease;
+}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.03)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{opacity:.55; cursor:not-allowed; filter:none}
+
+#spinBtn{
+  background:linear-gradient(90deg,var(--gold),var(--gold2));
+  color:#0b0f1e;
+}
+#claimBtn{
+  background:linear-gradient(90deg,var(--neon),var(--neon2));
+  color:#061018;
+}
+
+/* Confetti */
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+.confetti i{
+  position:absolute;top:-20px;width:10px;height:14px;border-radius:2px;opacity:0;
+  animation:confFall 1.6s linear forwards;
+}
+@keyframes confFall{
+  8%{opacity:1}
+  100%{transform:translateY(110vh) rotate(360deg);opacity:0}
+}
+
+/* Modal */
+.modal{
+  position:fixed; inset:0;
+  display:none; align-items:center; justify-content:center;
+  background:rgba(3,5,14,.68);
+  backdrop-filter:blur(6px);
+  z-index:70;
+}
+.modal.show{display:flex}
+.modalCard{
+  width:min(560px,92vw);
+  background: radial-gradient(120% 100% at 50% 0%, rgba(34,211,238,.10), transparent), var(--panel2);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:14px;
+  box-shadow:0 22px 55px rgba(0,0,0,.55);
+}
+.modalHead{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+.modalHead h3{margin:0;font-size:18px}
+.closeX{margin-left:auto; cursor:pointer; opacity:.8}
+.closeX:hover{opacity:1}
+.mrows{display:grid; gap:8px}
+.mrow{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px dashed rgba(255,255,255,.14);
+  background:rgba(255,255,255,.02);
+}
+.mrow .k{font-size:12px; color:var(--muted)}
+.mrow .v{font-weight:900}
+.mActions{display:flex; gap:10px; margin-top:12px}
+@media(max-width:520px){ .mActions{flex-direction:column} }
+.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text);}
+.btn.platform{
+  background:linear-gradient(90deg, rgba(124,77,255,.95), rgba(34,211,238,.92));
+  color:#061018;
+}
+</style>
+</head>
+
+<body>
+<div id="confetti" class="confetti" aria-hidden="true"></div>
+
+<!-- MENÚ LATERAL -->
+<div id="sideMenu" class="menuPanel" aria-hidden="true">
+  <div class="menuTop">
+    <b>Opciones</b>
+    <span id="closeMenu" class="menuClose">Cerrar ✖</span>
+  </div>
+  <div class="menuItems">
+    <div class="pill">
+      <span>⚡ Ventana activa</span>
+      <span class="count" id="countdown">14:09:13</span>
+    </div>
+    <div class="pill sound" id="soundToggle">
+      <span>🔊 Sonido</span>
+      <span><b id="soundState">ON</b></span>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="prizeModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modalCard">
+    <div class="modalHead">
+      <h3 id="modalTitle">🎉 Premio asignado</h3>
+      <span id="closeModalX" class="closeX" aria-label="Cerrar">✖</span>
+    </div>
+
+    <div class="mrows">
+      <div class="mrow"><span class="k">Segmento</span><span class="v" id="mSeg">—</span></div>
+      <div class="mrow"><span class="k">Carga elegida</span><span class="v" id="mAmt">—</span></div>
+      <div class="mrow"><span class="k">Premio</span><span class="v" id="mPrize">—</span></div>
+      <div class="mrow"><span class="k">Código</span><span class="v" id="mCode">—</span></div>
+      <div class="mrow"><span class="k">Fecha/Hora</span><span class="v" id="mTs">—</span></div>
+    </div>
+
+    <div class="mActions">
+      <button id="mClaim" class="btn" style="background:linear-gradient(90deg,var(--neon),var(--neon2));color:#061018;">📲 Reclamar por WhatsApp</button>
+      <a id="mPlatform" class="btn platform" href="http://bet-300.pw/" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">🎮 Entrar a la plataforma</a>
+      <button id="mClose" class="btn ghost">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="card">
+
+    <!-- Header 1 línea: logo + botón menú -->
+    <div class="topline">
+      <div class="brand">
+        <!-- Logo en la misma carpeta que index.html -->
+        <img id="logoImg" src="BET300%20%C2%B7%20Ruleta%20Progresiva_archivos/logo.svg" alt="BET300" onerror="this.style.display='none'">
+      </div>
+      <button id="menuBtn" class="menuBtn" aria-label="Abrir menú">☰</button>
+    </div>
+
+    <!-- Sticky: Segmento + Monto (arriba, NO abajo) -->
+    <div class="quickBar">
+      <div class="quickInner">
+        <div class="quickTop">
+          <div class="ttl">Elegí tu segmento</div>
+          <div class="sub">Básica / Pro / VIP · luego elegís el monto</div>
+        </div>
+
+        <div class="quickSegBtns">
+          <button class="qseg" id="qBasic" data-seg="basic">
+            BÁSICA
+            <small>$5k–$9.999</small>
+          </button>
+          <button class="qseg" id="qPro" data-seg="pro">
+            PRO
+            <small>$10k–$49.999</small>
+          </button>
+          <button class="qseg" id="qVip" data-seg="vip">
+            VIP
+            <small>$50k+</small>
+          </button>
+        </div>
+
+        <!-- MONTO (debajo de botones, sticky) -->
+        <div class="quickAmount">
+          <div class="field">
+            <div style="min-width:110px">
+              <div style="font-weight:900">Tu carga</div>
+              <div class="hint">mín. $5.000</div>
+            </div>
+            <input id="amount" inputmode="numeric" placeholder="Ej: 10000">
+          </div>
+          <div class="quickHelp">*Ingresá el monto y girá. Se valida según el segmento elegido.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top:12px">
+      <!-- IZQ: ruleta -->
+      <div class="panel">
+        <div class="stage">
+          <div class="wrap">
+            <canvas id="wheel" width="739" height="739" style="width: 493px; height: 493px;"></canvas>
+            <div class="pointer" aria-hidden="true"></div>
+          </div>
+        </div>
+        <p class="muted" style="margin-top:10px;font-size:12px;text-align:center">
+          Tip: elegí tu monto y segmento antes de girar. 1 giro por día (salvo “Otra chance”).
+        </p>
+      </div>
+
+      <!-- DER: info + segment (se mantiene) + estado -->
+      <div class="panel">
+        <div class="selector">
+          <h1>Beneficio progresivo</h1>
+          <p class="muted" style="margin-top:-2px">Base mínima: <b>$5.000</b>. Elegís tu carga y girás en tu segmento.</p>
+
+          <!-- Se mantiene también el selector acá (no “obliga” a scrollear) -->
+          <div class="segBtns">
+            <button class="seg" id="segBasic" data-seg="basic">
+              <b>BÁSICA</b>
+              <small>$5.000 a $9.999<br>Premios % y $</small>
+            </button>
+            <button class="seg" id="segPro" data-seg="pro">
+              <b>PRO</b>
+              <small>$10.000 a $49.999<br>Premios más altos</small>
+            </button>
+            <button class="seg" id="segVip" data-seg="vip">
+              <b>VIP</b>
+              <small>$50.000+<br>% VIP (tope base $200.000 al 30%)</small>
+            </button>
+          </div>
+
+          <div class="stat">
+            <div>
+              <div class="badge" id="badge">-</div>
+              <div class="smallline" id="stampLine"></div>
+            </div>
+            <div style="text-align:left">
+              <h2 id="title" style="margin:0 0 4px">Tenés 1 giro disponible</h2>
+              <p class="muted" id="subtitle" style="margin:0">Elegí tu monto + segmento para habilitar el giro.</p>
+            </div>
+          </div>
+
+          <div class="noteBox" id="rulesBox">
+            <div class="k">Regla del %</div>
+            <div class="v" id="ruleLine">—</div>
+            <div class="k" style="margin-top:6px">Acceso directo</div>
+            <div class="row">
+              <a id="platformBtn" class="btn platform" href="http://bet-300.pw/" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;flex:1">
+                🎮 Entrar a la plataforma
+              </a>
+            </div>
+          </div>
+
+          <p class="muted" style="font-size:12px;margin-top:6px">
+            *El premio se acredita con la próxima carga elegida (según segmento).<br>
+            *Si sale “Otra chance”, habilita 2º tiro (máx. 2 tiros/día).
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Dock fijo -->
+<div class="dock">
+  <button id="spinBtn" class="btn" disabled="disabled">🎯 Girar</button>
+  <button id="claimBtn" class="btn" disabled="disabled">📲 Reclamar por WhatsApp</button>
+</div>
+
+<script>
+/* ==============================
+   CONFIG: 5 PCs por parámetro ?pc=1..5
+   - LINK de plataforma único para todas: https://bet300.biz
+   - WhatsApp genéricos (cambiás luego)
+================================ */
+const PLATFORM_UNIQUE = "http://bet-300.pw/";
+
+const WP = "5491134051638";
+document.getElementById("platformBtn").href = PLATFORM_UNIQUE;
+document.getElementById("mPlatform").href = PLATFORM_UNIQUE;
+
+/* ==============================
+   PREMIOS por segmento
+================================ */
+const PRIZES = {
+  basic: [
+    {type:"money",  value:1000,  label:"$1.000"},
+    {type:"percent",value:20,    label:"20%"},
+    {type:"money",  value:2000,  label:"$2.000"},
+    {type:"percent",value:30,    label:"30%"},
+    {type:"money",  value:3000,  label:"$3.000"},
+    {type:"other",  value:1,     label:"Otra chance"},
+    {type:"percent",value:50,    label:"50%"},
+    {type:"money",  value:5000,  label:"$5.000"},
+  ],
+  pro: [
+    {type:"percent",value:30,    label:"30%"},
+    {type:"money",  value:5000,  label:"$5.000"},
+    {type:"percent",value:40,    label:"40%"},
+    {type:"money",  value:7000,  label:"$7.000"},
+    {type:"percent",value:50,    label:"50%"},
+    {type:"money",  value:10000, label:"$10.000"},
+    {type:"other",  value:1,     label:"Otra chance"},
+  ],
+  vip: [
+    {type:"money",  value:10000, label:"$10.000"},
+    {type:"percent",value:30,    label:"30% VIP"},
+    {type:"money",  value:15000, label:"$15.000"},
+    {type:"money",  value:20000, label:"$20.000"},
+    {type:"other",  value:1,     label:"Otra chance"},
+  ]
+};
+
+const COLORS = [
+  "#22d3ee","#7c4dff","#ffd166","#16e2b6","#ff6ad5",
+  "#8ab6ff","#4be1a0","#ffa3e0","#6ee7ff","#a78bfa",
+  "#34d39a","#ffe08a"
+];
+
+/* ==============================
+   ANTIFRAUDE + PERSISTENCIA
+================================ */
+const SALT = "bet300-ruleta-prog-v3";
+
+function ensureDeviceId(){
+  let id = localStorage.getItem("device_id");
+  if(!id){
+    id = (crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2,8)}`);
+    localStorage.setItem("device_id", id);
+  }
+  return id;
+}
+const DEVICE_ID = ensureDeviceId();
+
+function todayKey(){
+  const n=new Date();
+  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,"0")}-${String(n.getDate()).padStart(2,"0")}`;
+}
+function tsString(d=new Date()){
+  const dd=String(d.getDate()).padStart(2,"0"),
+        mm=String(d.getMonth()+1).padStart(2,"0"),
+        yyyy=d.getFullYear(),
+        hh=String(d.getHours()).padStart(2,"0"),
+        mi=String(d.getMinutes()).padStart(2,"0");
+  return `${dd}/${mm}/${yyyy} ${hh}:${mi}`;
+}
+async function sha256hex(msg){
+  const enc=new TextEncoder().encode(msg);
+  const buf=await crypto.subtle.digest("SHA-256",enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+async function makeClaimCode(payload){
+  const base = `${DEVICE_ID}|${todayKey()}|pc:${pc}|${payload}|${SALT}`;
+  const hex = await sha256hex(base);
+  return hex.slice(0,10).toUpperCase();
+}
+
+/* ==============================
+   AUDIO
+================================ */
+let soundOn = true;
+const soundToggle=document.getElementById("soundToggle");
+const soundState=document.getElementById("soundState");
+
+const AudioKit=(()=>{
+  const Ctx=window.AudioContext||window.webkitAudioContext;
+  const ctx=new Ctx(); let unlocked=false;
+  function unlock(){ if(!unlocked){ ctx.resume().catch(()=>{}); unlocked=true; } }
+  function click(freq=900,dur=0.04,vol=0.06){
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type="square"; o.frequency.value=freq;
+    g.gain.value=0; o.connect(g).connect(ctx.destination);
+    const t=ctx.currentTime;
+    g.gain.linearRampToValueAtTime(vol, t+0.005);
+    g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+    o.start(t); o.stop(t+dur);
+  }
+  function spinStart(){ const id=setInterval(()=>click(820+Math.random()*160,0.03,0.045),95); return ()=>clearInterval(id); }
+  function win(){ [880,1175,1568].forEach((f,i)=>setTimeout(()=>click(f,0.12,0.09), i*130)); }
+  return {unlock,spinStart,win};
+})();
+soundToggle.addEventListener("click",()=>{
+  soundOn=!soundOn;
+  soundState.textContent=soundOn?"ON":"OFF";
+});
+
+/* ==============================
+   MENÚ LATERAL
+================================ */
+const sideMenu = document.getElementById("sideMenu");
+const menuBtn  = document.getElementById("menuBtn");
+const closeMenu= document.getElementById("closeMenu");
+
+menuBtn.addEventListener("click", ()=>{
+  sideMenu.classList.add("show");
+  sideMenu.setAttribute("aria-hidden","false");
+});
+closeMenu.addEventListener("click", ()=>{
+  sideMenu.classList.remove("show");
+  sideMenu.setAttribute("aria-hidden","true");
+});
+document.addEventListener("keydown",(e)=>{
+  if(e.key==="Escape"){
+    sideMenu.classList.remove("show");
+    sideMenu.setAttribute("aria-hidden","true");
+  }
+});
+
+/* ==============================
+   UI refs
+================================ */
+const wheel=document.getElementById("wheel");
+const ctx=wheel.getContext("2d");
+
+const spinBtn=document.getElementById("spinBtn");
+const claimBtn=document.getElementById("claimBtn");
+
+const badge=document.getElementById("badge");
+const title=document.getElementById("title");
+const subtitle=document.getElementById("subtitle");
+const stampEl=document.getElementById("stampLine");
+
+const amountEl=document.getElementById("amount");
+const ruleLine=document.getElementById("ruleLine");
+
+const segButtons=[...document.querySelectorAll(".seg")];
+const qSegButtons=[...document.querySelectorAll(".qseg")];
+
+const modal=document.getElementById("prizeModal");
+const closeModalX=document.getElementById("closeModalX");
+const mClose=document.getElementById("mClose");
+const mSeg=document.getElementById("mSeg");
+const mAmt=document.getElementById("mAmt");
+const mPrize=document.getElementById("mPrize");
+const mCode=document.getElementById("mCode");
+const mTs=document.getElementById("mTs");
+const mClaim=document.getElementById("mClaim");
+
+/* ==============================
+   Estados / reglas
+================================ */
+const MIN_BASE = 5000;
+
+const SEGMENTS = {
+  basic: { name:"BÁSICA", min:5000,  max:9999,  percentCapMoney: 3000,  percentCapBase: null,    percentMax: 50 },
+  pro:   { name:"PRO",    min:10000, max:49999, percentCapMoney: 10000, percentCapBase: null,    percentMax: 50 },
+  vip:   { name:"VIP",    min:50000, max:Infinity, percentCapMoney: null, percentCapBase: 200000, percentMax: 30 }
+};
+
+let selectedSegment = null;
+let currentPrizes = PRIZES.basic;
+
+function money(n){ return "$"+Number(n).toLocaleString("es-AR"); }
+
+function sanitizeAmount(){
+  const raw = (amountEl.value||"").replace(/[^\d]/g,"");
+  amountEl.value = raw;
+  return raw ? Number(raw) : 0;
+}
+
+function setActiveSegUI(seg){
+  selectedSegment = seg;
+  currentPrizes = PRIZES[selectedSegment];
+
+  segButtons.forEach(b=>b.classList.toggle("active", b.dataset.seg===seg));
+  qSegButtons.forEach(b=>b.classList.toggle("active", b.dataset.seg===seg));
+
+  badge.textContent="-";
+  stampEl.textContent="";
+  title.textContent="Tenés 1 giro disponible";
+  claimBtn.disabled=true;
+
+  draw(angle);
+  validateSelection();
+}
+
+function validateSelection(){
+  const amt = sanitizeAmount();
+
+  if(!selectedSegment){
+    spinBtn.disabled=true;
+    subtitle.innerHTML="Elegí tu monto + segmento para habilitar el giro.";
+    ruleLine.textContent="—";
+    return;
+  }
+
+  if(amt < MIN_BASE){
+    spinBtn.disabled=true;
+    subtitle.innerHTML=`La carga mínima para jugar es <b>${money(MIN_BASE)}</b>.`;
+    ruleLine.textContent="—";
+    return;
+  }
+
+  const seg = SEGMENTS[selectedSegment];
+  if(amt < seg.min || amt > seg.max){
+    spinBtn.disabled=true;
+    subtitle.innerHTML=`Tu monto no entra en <b>${seg.name}</b>. Ajustalo o cambiá de segmento.`;
+    ruleLine.textContent="—";
+    return;
+  }
+
+  const used = getSpinCountToday();
+  const maxSpins = getMaxSpinsToday();
+  if(used >= maxSpins){
+    spinBtn.disabled=true;
+    subtitle.innerHTML=`Ya usaste tu chance de hoy.`;
+    ruleLine.textContent="—";
+    return;
+  }
+
+  spinBtn.disabled=false;
+
+  if(selectedSegment==="vip"){
+    ruleLine.textContent = `VIP: % se calcula sobre base hasta ${money(seg.percentCapBase)} (máx ${seg.percentMax}%).`;
+  }else{
+    ruleLine.textContent = `${seg.name}: % con tope de bonificación ${money(seg.percentCapMoney)}.`;
+  }
+
+  subtitle.innerHTML = `Girás en <b>${seg.name}</b>. Premios se acreditan con tu próxima carga.`;
+}
+
+qSegButtons.forEach(btn=>{
+  btn.addEventListener("click", ()=> setActiveSegUI(btn.dataset.seg));
+});
+segButtons.forEach(btn=>{
+  btn.addEventListener("click", ()=> setActiveSegUI(btn.dataset.seg));
+});
+amountEl.addEventListener("input", validateSelection);
+
+/* ==============================
+   Persistencia por día
+================================ */
+function storageKey(s){ return `ruleta_${s}`; }
+
+function resetIfNewDay(){
+  const t=todayKey();
+  const stored=localStorage.getItem(storageKey("date"));
+  if(stored && stored!==t){
+    ["done_count","max_spins","payload","code","ts","segment","amount"].forEach(k=>localStorage.removeItem(storageKey(k)));
+    localStorage.setItem(storageKey("date"), t);
+  }else if(!stored){
+    localStorage.setItem(storageKey("date"), t);
+  }
+}
+function getSpinCountToday(){ return Number(localStorage.getItem(storageKey("done_count"))||"0"); }
+function setSpinCountToday(n){ localStorage.setItem(storageKey("done_count"), String(n)); }
+function getMaxSpinsToday(){ return Number(localStorage.getItem(storageKey("max_spins"))||"1"); }
+function setMaxSpinsToday(n){ localStorage.setItem(storageKey("max_spins"), String(n)); }
+
+function restorePayloadIfAny(){
+  const payload = localStorage.getItem(storageKey("payload"));
+  if(!payload) return;
+  try{
+    const data = JSON.parse(payload);
+
+    if(data.segment && PRIZES[data.segment]){
+      setActiveSegUI(data.segment);
+    }
+    if(data.amount) amountEl.value = String(data.amount);
+
+    const code = localStorage.getItem(storageKey("code")) || "—";
+    const ts   = localStorage.getItem(storageKey("ts"))   || tsString();
+
+    badge.textContent = data.prizeLabel || "—";
+    title.textContent = "🎉 ¡Premio asignado!";
+    subtitle.innerHTML = data.subtitleHTML || `Reclamá tu premio o entrá a la plataforma.`;
+    stampEl.textContent = `Código: ${code} · ${ts}`;
+
+    const segN = SEGMENTS[selectedSegment]?.name || "—";
+    const msg = whatsappText(data.prizeLabel, segN, data.amount);
+    claimBtn.disabled = false;
+    claimBtn.onclick = ()=>location.href=`https://wa.me/${WP}?text=${encodeURIComponent(msg)}`;
+
+    validateSelection();
+  }catch(e){}
+}
+
+/* ==============================
+   WhatsApp texto (genérico)
+================================ */
+function whatsappText(prizeLabel, segName, amount){
+  const code = localStorage.getItem(storageKey("code")) || "(SIN-COD)";
+  const ts   = localStorage.getItem(storageKey("ts"))   || tsString();
+  return `Hola! Soy usuario de BET300.\nGané: ${prizeLabel} (${segName})\nCarga elegida: ${money(amount||0)}\nCódigo: ${code}\n${ts}\n\nQuiero reclamar el beneficio con mi próxima carga.`;
+}
+
+/* ==============================
+   Canvas Ruleta
+================================ */
+let angle=0, spinning=false, cx,cy,r, cssW=0;
+
+function getWrapWidth(){return Math.floor(document.querySelector(".wrap").getBoundingClientRect().width)}
+function setSize(){
+  const dpr=window.devicePixelRatio||1;
+  const w=Math.min(520,Math.max(280,getWrapWidth()));
+  cssW=w;
+  wheel.width=Math.floor(w*dpr); wheel.height=Math.floor(w*dpr);
+  wheel.style.width=w+"px"; wheel.style.height=w+"px";
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  cx=wheel.width/dpr/2; cy=wheel.height/dpr/2; r=Math.min(cx,cy)-10;
+}
+addEventListener("resize",()=>{clearTimeout(window.__wTo);window.__wTo=setTimeout(()=>setSize(),120)});
+
+function draw(a){
+  ctx.clearRect(0,0,wheel.width,wheel.height);
+  const n=currentPrizes.length, arc=Math.PI*2/n;
+
+  const font= cssW<=340?"800 17px system-ui,-apple-system,Segoe UI":
+               cssW<=380?"800 20px system-ui,-apple-system,Segoe UI":
+               cssW<=440?"800 23px system-ui,-apple-system,Segoe UI":"800 26px system-ui,-apple-system,Segoe UI";
+
+  for(let i=0;i<n;i++){
+    const s=a+i*arc, e=s+arc;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,e);ctx.closePath();
+    ctx.fillStyle=COLORS[i%COLORS.length];ctx.fill();
+    ctx.strokeStyle="rgba(10,15,35,.35)";ctx.lineWidth=2;ctx.stroke();
+
+    const txt=currentPrizes[i].label;
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(s+arc/2);
+    ctx.textAlign="right";
+    ctx.font=font;
+
+    ctx.fillStyle="rgba(0,0,0,.35)";
+    ctx.fillText(txt, r-18, 11);
+
+    ctx.fillStyle="#061018";
+    ctx.fillText(txt, r-18, 10);
+
+    ctx.restore();
+  }
+
+  // aro + luces
+  ctx.beginPath();
+  ctx.lineWidth=Math.max(8,r*0.04);
+  ctx.strokeStyle="rgba(255,255,255,.14)";
+  ctx.arc(cx,cy,r*1.02,0,Math.PI*2);
+  ctx.stroke();
+
+  const bulbs=54, rr=r*1.02, t=Date.now()/130;
+  for(let i=0;i<bulbs;i++){
+    const ang=i/bulbs*Math.PI*2;
+    const x=cx+Math.cos(ang)*rr, y=cy+Math.sin(ang)*rr;
+    const on=(Math.floor(t)%bulbs)===i;
+    ctx.beginPath();
+    ctx.fillStyle=on?"rgba(240,250,255,1)":"rgba(240,250,255,.55)";
+    ctx.arc(x,y,Math.max(3,r*0.03),0,Math.PI*2);
+    ctx.fill();
+  }
+
+  // centro
+  const rCenter=cssW<=360?Math.max(26,r*.085):cssW<=420?Math.max(30,r*.095):Math.max(34,r*.105);
+  ctx.beginPath();ctx.arc(cx,cy,rCenter,0,Math.PI*2);
+  ctx.fillStyle="#0a0f1f";ctx.fill();
+  ctx.strokeStyle="rgba(34,211,238,.55)";
+  ctx.lineWidth=Math.max(2,rCenter*.08);
+  ctx.stroke();
+}
+(function glow(){ draw(angle); requestAnimationFrame(glow); })();
+
+function normAngle(rad){ const T=Math.PI*2; return ((rad%T)+T)%T; }
+function winnerIndexByAngle(a){
+  const n=currentPrizes.length;
+  const arc=(Math.PI*2)/n;
+  const pointer=Math.PI*1.5;
+  const rel=normAngle(pointer - a);
+  return Math.floor(rel/arc)%n;
+}
+function animateTo(target,ms,cb){
+  const start=performance.now(),from=angle;
+  (function loop(t){
+    const k=Math.min(1,(t-start)/ms),ease=1-Math.pow(1-k,3);
+    angle=from+(target-from)*ease;
+    if(k<1) requestAnimationFrame(loop);
+    else cb&&cb();
+  })(start);
+}
+
+/* ==============================
+   Confetti
+================================ */
+function confettiBurst(){
+  const el=document.getElementById("confetti");
+  el.innerHTML="";
+  const n=30;
+  for(let i=0;i<n;i++){
+    const p=document.createElement("i");
+    p.style.left=(Math.random()*100)+"vw";
+    p.style.animationDelay=(Math.random()*0.5)+"s";
+    p.style.background = Math.random()<.5
+      ? "linear-gradient(#80ffea,#4e9cff)"
+      : "linear-gradient(#ffd166,#ff3d7f)";
+    el.appendChild(p);
+  }
+  setTimeout(()=>{el.innerHTML="";},1800);
+}
+
+/* ==============================
+   Modal
+================================ */
+function openModal(data){
+  mSeg.textContent  = data.segName;
+  mAmt.textContent  = money(data.amount);
+  mPrize.textContent= data.prizeLabel;
+  mCode.textContent = data.code;
+  mTs.textContent   = data.ts;
+
+  const msg = whatsappText(data.prizeLabel, data.segName, data.amount);
+  mClaim.onclick = ()=>location.href=`https://wa.me/${WP}?text=${encodeURIComponent(msg)}`;
+
+  modal.classList.add("show");
+}
+function closeModal(){ modal.classList.remove("show"); }
+mClose.onclick=closeModal;
+closeModalX.onclick=closeModal;
+modal.addEventListener("click",(e)=>{ if(e.target===modal) closeModal(); });
+
+/* ==============================
+   Countdown fin de día
+================================ */
+function endOfDay(){
+  const n=new Date();
+  const end=new Date(n.getFullYear(),n.getMonth(),n.getDate(),23,59,0,0).getTime();
+  return end>Date.now()?end:new Date(n.getFullYear(),n.getMonth(),n.getDate()+1,23,59,0,0).getTime();
+}
+function tickCountdown(){
+  const ms=endOfDay()-Date.now();
+  const total=Math.max(0,Math.floor(ms/1000));
+  const h=Math.floor(total/3600),
+        m=Math.floor((total%3600)/60),
+        s=total%60;
+  document.getElementById("countdown").textContent =
+    h>0 ? `${h}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`
+        : `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+}
+
+/* ==============================
+   SPIN
+================================ */
+let stopTicks=null;
+document.addEventListener("click",()=>AudioKit.unlock(),{once:true});
+
+function percentBonus(amount, percent, segmentKey){
+  const seg = SEGMENTS[segmentKey];
+  if(segmentKey==="vip"){
+    const base = Math.min(amount, seg.percentCapBase);
+    const p = Math.min(percent, seg.percentMax);
+    return Math.floor(base * (p/100));
+  }
+  const raw = Math.floor(amount * (percent/100));
+  return Math.min(raw, seg.percentCapMoney);
+}
+function buildSubtitle(prize, amount, segmentKey){
+  if(prize.type==="money") return `Recibís <b>${money(prize.value)} extra</b> con tu próxima carga.`;
+  if(prize.type==="percent"){
+    const bonus = percentBonus(amount, prize.value, segmentKey);
+    if(segmentKey==="vip"){
+      return `VIP: Recibís <b>${prize.value}% extra</b> (base hasta ${money(SEGMENTS.vip.percentCapBase)}) → <b>${money(bonus)} extra</b>.`;
+    }
+    return `Recibís <b>${prize.value}% extra</b> → <b>${money(bonus)} extra</b> (aplica tope del segmento).`;
+  }
+  if(prize.type==="other") return `Te habilita un <b>2º tiro</b> hoy.`;
+  return `Premio asignado.`;
+}
+
+spinBtn.addEventListener("click", async ()=>{
+  if(spinning) return;
+
+  resetIfNewDay();
+
+  const amount = sanitizeAmount();
+  if(!selectedSegment){ alert("Elegí un segmento."); return; }
+  if(amount < MIN_BASE){ alert(`Carga mínima ${money(MIN_BASE)}.`); return; }
+
+  const seg=SEGMENTS[selectedSegment];
+  if(amount < seg.min || amount > seg.max){
+    alert(`Ese monto no entra en ${seg.name}.`);
+    return;
+  }
+
+  const used = getSpinCountToday();
+  const maxSpins = getMaxSpinsToday();
+  if(used >= maxSpins){
+    alert("Ya usaste tu chance de hoy.");
+    validateSelection();
+    return;
+  }
+
+  spinning=true;
+  spinBtn.disabled=true;
+  claimBtn.disabled=true;
+
+  AudioKit.unlock();
+  if(soundOn){ stopTicks = AudioKit.spinStart(); }
+
+  const extraTurns = 5 + Math.random()*1.7;
+  const offset = Math.random()*Math.PI*2;
+  const final = angle + (Math.PI*2*extraTurns) + offset;
+
+  animateTo(final, 3000, async ()=>{
+    angle=final;
+
+    const idx = winnerIndexByAngle(angle);
+    const prize = currentPrizes[idx];
+
+    let prizeLabel = prize.label;
+    let subtitleHTML = buildSubtitle(prize, amount, selectedSegment);
+
+    if(prize.type==="other"){
+      setMaxSpinsToday(2);
+    }
+
+    const segName = SEGMENTS[selectedSegment].name;
+    const payloadForCode = `${segName}|amt:${amount}|prize:${prizeLabel}`;
+    const code = await makeClaimCode(payloadForCode);
+    const ts = tsString(new Date());
+
+    localStorage.setItem(storageKey("segment"), selectedSegment);
+    localStorage.setItem(storageKey("amount"), String(amount));
+    localStorage.setItem(storageKey("code"), code);
+    localStorage.setItem(storageKey("ts"), ts);
+
+    setSpinCountToday(used + 1);
+
+    localStorage.setItem(storageKey("payload"), JSON.stringify({
+      segment: selectedSegment,
+      amount,
+      prizeLabel,
+      subtitleHTML
+    }));
+
+    badge.textContent = prizeLabel;
+    title.textContent = "🎉 ¡Premio asignado!";
+    subtitle.innerHTML = subtitleHTML;
+    stampEl.textContent = `Código: ${code} · ${ts}`;
+
+    const msg = whatsappText(prizeLabel, segName, amount);
+    claimBtn.disabled = false;
+    claimBtn.onclick = ()=>location.href=`https://wa.me/${WP}?text=${encodeURIComponent(msg)}`;
+
+    if(soundOn){ if(stopTicks) stopTicks(); AudioKit.win(); }
+    confettiBurst();
+
+    openModal({ segName, amount, prizeLabel, code, ts });
+
+    spinning=false;
+    validateSelection();
+  });
+});
+
+/* ==============================
+   Reset a medianoche (suave)
+================================ */
+function scheduleMidnightReset(){
+  const now=new Date();
+  const midnight=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,5,0);
+  setTimeout(()=>{
+    ["done_count","max_spins","payload","code","ts","segment","amount"].forEach(k=>localStorage.removeItem(storageKey(k)));
+    localStorage.setItem(storageKey("date"), todayKey());
+
+    badge.textContent="-";
+    title.textContent="Tenés 1 giro disponible";
+    subtitle.innerHTML="Elegí tu monto + segmento para habilitar el giro.";
+    stampEl.textContent="";
+    claimBtn.disabled=true;
+
+    validateSelection();
+  }, midnight.getTime()-now.getTime());
+}
+
+/* ==============================
+   INIT
+================================ */
+function init(){
+  setSize();
+  resetIfNewDay();
+  tickCountdown();
+  setInterval(tickCountdown, 1000);
+  scheduleMidnightReset();
+
+  if(!localStorage.getItem(storageKey("max_spins"))) setMaxSpinsToday(1);
+
+  restorePayloadIfAny();
+  validateSelection();
+}
+init();
+</script>
+
+
+</body></html>
